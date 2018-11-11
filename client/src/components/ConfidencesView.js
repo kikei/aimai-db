@@ -16,7 +16,7 @@ export default class ConfidencesView extends React.Component {
   async getConfidences() {
     const account = this.context
     const accountId = account.accountId
-    const uri = `http://127.0.0.1:5000/btctai/${accountId}/confidences`
+    const uri = `/btctai/${accountId}/confidences`
     console.log("Request confidences, uri:", uri)
     const opts = {
       method: "GET",

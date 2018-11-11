@@ -66,7 +66,7 @@ class App extends Component {
     }
     try {
       const {response, json} =
-            await fetchJSON("http://127.0.0.1:5000/refresh", opts)
+            await fetchJSON("/refresh", opts)
       console.log("requestRefresh, json:", json)
       const accessToken = json.access_token
       window.localStorage.setItem("access_token", accessToken)
@@ -89,7 +89,7 @@ class App extends Component {
     }
     try {
       const {response, json} =
-            await fetchJSON("http://127.0.0.1:5000/login", opts)
+            await fetchJSON("/login", opts)
       console.log("requestLogin, json:", json)
       const accessToken = json.access_token
       const refreshToken = json.refresh_token

@@ -115,7 +115,7 @@ export default class ValuesView extends React.Component {
   async getValues() {
     const account = this.context
     const accountId = account.accountId
-    const uri = `http://127.0.0.1:5000/btctai/${accountId}/values`
+    const uri = `/btctai/${accountId}/values`
     console.log("Request values, uri:", uri)
     const opts = {
       method: "GET",
@@ -133,7 +133,7 @@ export default class ValuesView extends React.Component {
   async postValue(key, value) {
     const account = this.context
     const accountId = account.accountId
-    const uri = `http://127.0.0.1:5000/btctai/${accountId}/values/${key}`
+    const uri = `/btctai/${accountId}/values/${key}`
     const opts = {
       method: "POST",
       body: JSON.stringify({value: value}),
