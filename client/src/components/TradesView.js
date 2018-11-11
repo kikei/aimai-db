@@ -20,7 +20,7 @@ export default class TradesView extends React.Component {
   async getTrades() {
     const account = this.context
     const accountId = account.accountId
-    const uri = `http://127.0.0.1:5000/btctai/${accountId}/trades`
+    const uri = `/btctai/${accountId}/trades`
     console.log("Request values, uri:", uri)
     const opts = {
       method: "GET",
