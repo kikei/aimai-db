@@ -1,6 +1,7 @@
 import React from 'react';
 import { AccountContext } from '../contexts/contexts'
 import { fetchProtectedJSON } from '../utils'
+import { Table, Tr, Td } from '../components/tables'
 
 function parseOfType(type, value) {
   switch (type) {
@@ -56,31 +57,29 @@ class ValueRow extends React.Component {
     const props = this.props
     if (!state.edit) {
       return (
-        <div className="siimple-table-row">
-          <div className="siimple-table-cell">{props.keyName}</div>
-          <div className="siimple-table-cell">{props.type}</div>
-          <div className="siimple-table-cell">
-            {props.value !== null && String(props.value)}
-          </div>
-          <div className="siimple-table-cell">
+        <Tr>
+          <Td>{props.keyName}</Td>
+          <Td>{props.type}</Td>
+          <Td>{props.value !== null && String(props.value)}</Td>
+          <Td>
             <button className="siimple-btn siimple-btn--teal"
                     onClick={this.clickEdit.bind(this, props.keyName)}>
               Edit
             </button>
-          </div>
-        </div>
+          </Td>
+        </Tr>
       )
     } else {
       return (
-        <div className="siimple-table-row">
-          <div className="siimple-table-cell">{props.keyName}</div>
-          <div className="siimple-table-cell">{props.type}</div>
-          <div className="siimple-table-cell">
+        <Tr>
+          <Td>{props.keyName}</Td>
+          <Td>{props.type}</Td>
+          <Td>
             <input type="text" className="siimple-input siimple-input--fluid"
                    value={state.inputValue}
                    onChange={this.changeInputValue}/>
-          </div>
-          <div className="siimple-table-cell">
+          </Td>
+          <Td>
             <button className="siimple-btn siimple-btn--primary"
                     onClick={this.clickSubmit}>
               Submit
@@ -89,8 +88,8 @@ class ValueRow extends React.Component {
                     onClick={this.clickCancel}>
               Cancel
             </button>
-          </div>
-        </div>
+          </Td>
+        </Tr>
       )
     }
   }
@@ -167,14 +166,14 @@ export default class ValuesView extends React.Component {
             return (
               <div className="siimple-content">
                 <h2>Values</h2>
-                <div className="siimple-table siimple-table--striped siimple-table--border">
+                <Table>
                   <div className="siimple-table-header">
-                    <div className="siimple-table-row">
-                      <div className="siimple-table-cell">Name</div>
-                      <div className="siimple-table-cell">Type</div>
-                      <div className="siimple-table-cell">Value</div>
-                      <div className="siimple-table-cell">Action</div>
-                    </div>
+                    <Tr>
+                      <Td>Name</Td>
+                      <Td>Type</Td>
+                      <Td>Value</Td>
+                      <Td>Action</Td>
+                    </Tr>
                   </div>
                   <div className="siimple-table-body">
                     {
@@ -187,7 +186,7 @@ export default class ValuesView extends React.Component {
                       })
                     }
                   </div>
-                </div>
+                </Table>
               </div>
             )
           }
