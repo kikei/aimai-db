@@ -170,13 +170,13 @@ class App extends Component {
       <div>
         <div className="siimple-grid">
           <div className="siimple-grid-row">
-            <div className="siimple-grid-col siimple-grid-col--2"></div>
-            <div className="siimple-grid-col siimple-grid-col--8">
+            <div className="siimple-grid-col siimple-grid-col--2 siimple-grid-col--md-1 siimple-grid-col--sm-12"></div>
+            <div className="siimple-grid-col siimple-grid-col--8 siimple-grid-col--md-10 siimple-grid-col--sm-12">
               {Header}
               {Navigation}
               {Body}
             </div>
-            <div className="siimple-grid-col siimple-grid-col--2"></div>
+            <div className="siimple-grid-col siimple-grid-col--2 siimple-grid-col--md-1 siimple-grid-col--sm-12"></div>
           </div>
         </div>
       </div>
