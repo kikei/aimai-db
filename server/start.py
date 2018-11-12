@@ -17,6 +17,7 @@ DIR_LIBS = os.path.join(CWD, '..', '..', 'libs')
 sys.path.append(os.path.join(DIR_LIBS, 'btcbot1', 'apps', 'trade', 'src'))
 
 from main import getDBInstance, getModels
+from classes import Confidence
 
 dbi = getDBInstance()
 dashbModels = DashboardModels(dbi)
@@ -58,7 +59,7 @@ def userIdentityLoader(account):
 @flask_jwt.jwt_refresh_token_required
 def refresh():
   identity = flask_jwt.get_jwt_identity()
-  account = modelAccounts.one(identity)
+  account = modelAccounts.one(accountId=identity)
   accessToken = flask_jwt.create_access_token(identity=account)
   return flask.jsonify({'access_token': accessToken})
 
@@ -81,7 +82,7 @@ def getBtctaiValues(accountId):
   identity = flask_jwt.get_jwt_identity()
   if accountId != identity:
     flask.abort(403)
-  values = modelValues.all2()
+  values = modelValues.all(accountId=accountId)
   return flask.jsonify(values)
 
 @app.route('/btctai/<string:accountId>/values/<string:key>',
@@ -96,7 +97,7 @@ def post_flag(accountId, key):
   if not modelValues.checkType(key, value):
     flask.abort(400)
   try:
-    result = modelValues.set(key, value)
+    result = modelValues.set(key, value, accountId=accountId)
     if result is None:
       flask.abort(404)
     ty = modelValues.getType(key)
@@ -111,7 +112,7 @@ def getBtctaiTrades(accountId):
   identity = flask_jwt.get_jwt_identity()
   if accountId != identity:
     flask.abort(403)
-  trades = modelTrades.all()
+  trades = modelTrades.all(accountId=identity)
   trades = [t.toDict() for t in trades]
   return flask.jsonify(trades)
 
@@ -121,9 +122,21 @@ def getBtctaiConfidences(accountId):
   identity = flask_jwt.get_jwt_identity()
   if accountId != identity:
     flask.abort(403)
-  confs = modelConfidences.all()
+  confs = modelConfidences.all(accountId=accountId)
   confs = [c.toDict() for c in confs]
   return flask.jsonify(confs)
+
+@app.route('/btctai/<string:accountId>/confidences', methods=['PUT'])
+@flask_jwt.jwt_required
+def putBtctaiConfidences(accountId):
+  identity = flask_jwt.get_jwt_identity()
+  if accountId != identity:
+    flask.abort(403)
+  obj = flask.request.get_json()
+  conf = Confidence.fromDict(obj)
+  conf = modelConfidences.save(conf, accountId=accountId)
+  conf = conf.toDict()
+  return flask.jsonify(conf)
 
 # @app.route('/api/assets', methods=['GET'])
 # @jwt_required()
