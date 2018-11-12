@@ -1,6 +1,7 @@
 import React from 'react';
 import { AccountContext } from '../contexts/contexts'
 import { fetchProtectedJSON } from '../utils'
+import { Table, Tr, Td } from '../components/tables'
 
 export default class ConfidencesView extends React.Component {
   constructor(props) {
@@ -42,39 +43,31 @@ export default class ConfidencesView extends React.Component {
             return (
               <div className="siimple-content">
                 <h2>Confidences</h2>
-                <div className="siimple-table siimple-table--striped siimple-table--border">
+                <Table>
                   <div className="siimple-table-header">
-                    <div className="siimple-table-row">
-                      <div className="siimple-table-cell">Date</div>
-                      <div className="siimple-table-cell">Long</div>
-                      <div className="siimple-table-cell">Short</div>
-                      <div className="siimple-table-cell">Status</div>
-                    </div>
+                    <Tr>
+                      <Td>Date</Td>
+                      <Td>Long</Td>
+                      <Td>Short</Td>
+                      <Td>Status</Td>
+                    </Tr>
                   </div>
                   <div className="siimple-table-body">
                     {
                       state.confidences.map((c, i) => {
                         const date = new Date(c.timestamp * 1000)
                         return (
-                          <div key={i} className="siimple-table-row">
-                            <div className="siimple-table-cell">
-                              {date.toLocaleString()}
-                            </div>
-                            <div className="siimple-table-cell">
-                              {Math.round(c.long * 100)} %
-                            </div>
-                            <div className="siimple-table-cell">
-                              {Math.round(c.short * 100)} %
-                            </div>
-                            <div className="siimple-table-cell">
-                              {c.status}
-                            </div>
-                          </div>
+                          <Tr key={i}>
+                            <Td>{date.toLocaleString()}</Td>
+                            <Td>{Math.round(c.long * 100)} %</Td>
+                            <Td>{Math.round(c.short * 100)} %</Td>
+                            <Td>{c.status}</Td>
+                          </Tr>
                         )
                       })
                     }
                   </div>
-                </div>
+                </Table>
               </div>
             )
           }

@@ -31097,11 +31097,11 @@ function (_Component) {
       }, _react.default.createElement("div", {
         className: "siimple-grid-row"
       }, _react.default.createElement("div", {
-        className: "siimple-grid-col siimple-grid-col--2"
+        className: "siimple-grid-col siimple-grid-col--2 siimple-grid-col--md-1 siimple-grid-col--sm-12"
       }), _react.default.createElement("div", {
-        className: "siimple-grid-col siimple-grid-col--8"
+        className: "siimple-grid-col siimple-grid-col--8 siimple-grid-col--md-10 siimple-grid-col--sm-12"
       }, Header, Navigation, Body), _react.default.createElement("div", {
-        className: "siimple-grid-col siimple-grid-col--2"
+        className: "siimple-grid-col siimple-grid-col--2 siimple-grid-col--md-1 siimple-grid-col--sm-12"
       }))));
     }
   }]);
@@ -31146,6 +31146,8 @@ var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_mod
 var _contexts = __webpack_require__(/*! ../contexts/contexts */ "./src/contexts/contexts.js");
 
 var _utils = __webpack_require__(/*! ../utils */ "./src/utils.js");
+
+var _tables = __webpack_require__(/*! ../components/tables */ "./src/components/tables.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31255,36 +31257,15 @@ function (_React$Component) {
         console.log("ConfidencesView.render, account:", account, "state:", state);
         return _react.default.createElement("div", {
           className: "siimple-content"
-        }, _react.default.createElement("h2", null, "Confidences"), _react.default.createElement("div", {
-          className: "siimple-table siimple-table--striped siimple-table--border"
-        }, _react.default.createElement("div", {
+        }, _react.default.createElement("h2", null, "Confidences"), _react.default.createElement(_tables.Table, null, _react.default.createElement("div", {
           className: "siimple-table-header"
-        }, _react.default.createElement("div", {
-          className: "siimple-table-row"
-        }, _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Date"), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Long"), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Short"), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Status"))), _react.default.createElement("div", {
+        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Date"), _react.default.createElement(_tables.Td, null, "Long"), _react.default.createElement(_tables.Td, null, "Short"), _react.default.createElement(_tables.Td, null, "Status"))), _react.default.createElement("div", {
           className: "siimple-table-body"
         }, state.confidences.map(function (c, i) {
           var date = new Date(c.timestamp * 1000);
-          return _react.default.createElement("div", {
-            key: i,
-            className: "siimple-table-row"
-          }, _react.default.createElement("div", {
-            className: "siimple-table-cell"
-          }, date.toLocaleString()), _react.default.createElement("div", {
-            className: "siimple-table-cell"
-          }, Math.round(c.long * 100), " %"), _react.default.createElement("div", {
-            className: "siimple-table-cell"
-          }, Math.round(c.short * 100), " %"), _react.default.createElement("div", {
-            className: "siimple-table-cell"
-          }, c.status));
+          return _react.default.createElement(_tables.Tr, {
+            key: i
+          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, Math.round(c.long * 100), " %"), _react.default.createElement(_tables.Td, null, Math.round(c.short * 100), " %"), _react.default.createElement(_tables.Td, null, c.status));
         }))));
       });
     }
@@ -31556,6 +31537,8 @@ var _contexts = __webpack_require__(/*! ../contexts/contexts */ "./src/contexts/
 
 var _utils = __webpack_require__(/*! ../utils */ "./src/utils.js");
 
+var _tables = __webpack_require__(/*! ../components/tables */ "./src/components/tables.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -31678,45 +31661,20 @@ function (_React$Component) {
         console.log("TradesView.render, account:", account, "state:", state);
         return _react.default.createElement("div", {
           className: "siimple-content"
-        }, _react.default.createElement("h2", null, "Trades"), _react.default.createElement("div", {
-          className: "siimple-table siimple-table--striped siimple-table--border"
-        }, _react.default.createElement("div", {
+        }, _react.default.createElement("h2", null, "Trades"), _react.default.createElement(_tables.Table, null, _react.default.createElement("div", {
           className: "siimple-table-header"
-        }, _react.default.createElement("div", {
-          className: "siimple-table-row"
-        }, _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Date"), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Side"), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Size"), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Price"), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Amount"))), _react.default.createElement("div", {
+        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Date"), _react.default.createElement(_tables.Td, null, "Side"), _react.default.createElement(_tables.Td, null, "Size"), _react.default.createElement(_tables.Td, null, "Price"), _react.default.createElement(_tables.Td, null, "Amount"))), _react.default.createElement("div", {
           className: "siimple-table-body"
         }, state.trades.map(function (v, i) {
           var p = v.position;
           var date = new Date(v.timestamp * 1000);
           var side = p.side;
-          var price = sum(p.prices);
-          var size = sum(p.sizes);
           var amount = sumProduct([p.prices, p.sizes]);
-          return _react.default.createElement("div", {
-            key: i,
-            className: "siimple-table-row"
-          }, _react.default.createElement("div", {
-            className: "siimple-table-cell"
-          }, date.toLocaleString()), _react.default.createElement("div", {
-            className: "siimple-table-cell"
-          }, side), _react.default.createElement("div", {
-            className: "siimple-table-cell"
-          }, size.toFixed(3)), _react.default.createElement("div", {
-            className: "siimple-table-cell"
-          }, price.toFixed(0)), _react.default.createElement("div", {
-            className: "siimple-table-cell"
-          }, amount.toFixed(0)));
+          var size = sum(p.sizes);
+          var price = amount / size;
+          return _react.default.createElement(_tables.Tr, {
+            key: i
+          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, side), _react.default.createElement(_tables.Td, null, size.toFixed(3)), _react.default.createElement(_tables.Td, null, price.toFixed(0)), _react.default.createElement(_tables.Td, null, amount.toFixed(0)));
         }))));
       });
     }
@@ -31766,6 +31724,8 @@ var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_mod
 var _contexts = __webpack_require__(/*! ../contexts/contexts */ "./src/contexts/contexts.js");
 
 var _utils = __webpack_require__(/*! ../utils */ "./src/utils.js");
+
+var _tables = __webpack_require__(/*! ../components/tables */ "./src/components/tables.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31889,37 +31849,17 @@ function (_React$Component) {
       var props = this.props;
 
       if (!state.edit) {
-        return _react.default.createElement("div", {
-          className: "siimple-table-row"
-        }, _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, props.keyName), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, props.type), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, props.value !== null && String(props.value)), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, _react.default.createElement("button", {
+        return _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, props.keyName), _react.default.createElement(_tables.Td, null, props.type), _react.default.createElement(_tables.Td, null, props.value !== null && String(props.value)), _react.default.createElement(_tables.Td, null, _react.default.createElement("button", {
           className: "siimple-btn siimple-btn--teal",
           onClick: this.clickEdit.bind(this, props.keyName)
         }, "Edit")));
       } else {
-        return _react.default.createElement("div", {
-          className: "siimple-table-row"
-        }, _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, props.keyName), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, props.type), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, _react.default.createElement("input", {
+        return _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, props.keyName), _react.default.createElement(_tables.Td, null, props.type), _react.default.createElement(_tables.Td, null, _react.default.createElement("input", {
           type: "text",
           className: "siimple-input siimple-input--fluid",
           value: state.inputValue,
           onChange: this.changeInputValue
-        })), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, _react.default.createElement("button", {
+        })), _react.default.createElement(_tables.Td, null, _react.default.createElement("button", {
           className: "siimple-btn siimple-btn--primary",
           onClick: this.clickSubmit
         }, "Submit"), _react.default.createElement("button", {
@@ -32088,21 +32028,9 @@ function (_React$Component2) {
         console.log("ValuesView.render, account:", account, "state:", state);
         return _react.default.createElement("div", {
           className: "siimple-content"
-        }, _react.default.createElement("h2", null, "Values"), _react.default.createElement("div", {
-          className: "siimple-table siimple-table--striped siimple-table--border"
-        }, _react.default.createElement("div", {
+        }, _react.default.createElement("h2", null, "Values"), _react.default.createElement(_tables.Table, null, _react.default.createElement("div", {
           className: "siimple-table-header"
-        }, _react.default.createElement("div", {
-          className: "siimple-table-row"
-        }, _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Name"), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Type"), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Value"), _react.default.createElement("div", {
-          className: "siimple-table-cell"
-        }, "Action"))), _react.default.createElement("div", {
+        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Name"), _react.default.createElement(_tables.Td, null, "Type"), _react.default.createElement(_tables.Td, null, "Value"), _react.default.createElement(_tables.Td, null, "Action"))), _react.default.createElement("div", {
           className: "siimple-table-body"
         }, Object.keys(state.values).map(function (k, i) {
           var _state$values$k = _slicedToArray(state.values[k], 2),
@@ -32126,6 +32054,124 @@ function (_React$Component2) {
 
 exports.default = ValuesView;
 ValuesView.contextType = _contexts.AccountContext;
+
+/***/ }),
+
+/***/ "./src/components/tables.js":
+/*!**********************************!*\
+  !*** ./src/components/tables.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Td = exports.Tr = exports.Table = void 0;
+
+__webpack_require__(/*! core-js/modules/es7.symbol.async-iterator */ "./node_modules/core-js/modules/es7.symbol.async-iterator.js");
+
+__webpack_require__(/*! core-js/modules/es6.symbol */ "./node_modules/core-js/modules/es6.symbol.js");
+
+var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Table =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Table, _React$Component);
+
+  function Table() {
+    _classCallCheck(this, Table);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Table).apply(this, arguments));
+  }
+
+  _createClass(Table, [{
+    key: "render",
+    value: function render() {
+      return _react.default.createElement("div", {
+        className: "siimple-table siimple-table--striped siimple-table--border"
+      }, this.props.children);
+    }
+  }]);
+
+  return Table;
+}(_react.default.Component);
+
+exports.Table = Table;
+
+var Tr =
+/*#__PURE__*/
+function (_React$Component2) {
+  _inherits(Tr, _React$Component2);
+
+  function Tr() {
+    _classCallCheck(this, Tr);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Tr).apply(this, arguments));
+  }
+
+  _createClass(Tr, [{
+    key: "render",
+    value: function render() {
+      return _react.default.createElement("div", {
+        className: "siimple-table-row"
+      }, this.props.children);
+    }
+  }]);
+
+  return Tr;
+}(_react.default.Component);
+
+exports.Tr = Tr;
+
+var Td =
+/*#__PURE__*/
+function (_React$Component3) {
+  _inherits(Td, _React$Component3);
+
+  function Td() {
+    _classCallCheck(this, Td);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Td).apply(this, arguments));
+  }
+
+  _createClass(Td, [{
+    key: "render",
+    value: function render() {
+      return _react.default.createElement("div", {
+        className: "siimple-table-cell"
+      }, this.props.children);
+    }
+  }]);
+
+  return Td;
+}(_react.default.Component);
+
+exports.Td = Td;
 
 /***/ }),
 

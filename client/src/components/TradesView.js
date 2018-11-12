@@ -1,6 +1,7 @@
 import React from 'react';
 import { AccountContext } from '../contexts/contexts'
 import { fetchProtectedJSON } from '../utils'
+import { Table, Tr, Td } from '../components/tables'
 
 const sum = (xs) => xs.reduce((i,a) => i + a, 0)
 const sumProduct = (xss) =>
@@ -46,15 +47,15 @@ export default class TradesView extends React.Component {
             return (
               <div className="siimple-content">
                 <h2>Trades</h2>
-                <div className="siimple-table siimple-table--striped siimple-table--border">
+                <Table>
                   <div className="siimple-table-header">
-                    <div className="siimple-table-row">
-                      <div className="siimple-table-cell">Date</div>
-                      <div className="siimple-table-cell">Side</div>
-                      <div className="siimple-table-cell">Size</div>
-                      <div className="siimple-table-cell">Price</div>
-                      <div className="siimple-table-cell">Amount</div>
-                    </div>
+                    <Tr>
+                      <Td>Date</Td>
+                      <Td>Side</Td>
+                      <Td>Size</Td>
+                      <Td>Price</Td>
+                      <Td>Amount</Td>
+                    </Tr>
                   </div>
                   <div className="siimple-table-body">
                     {
@@ -62,30 +63,22 @@ export default class TradesView extends React.Component {
                         const p = v.position
                         const date = new Date(v.timestamp * 1000)
                         const side = p.side
-                        const price = sum(p.prices)
-                        const size = sum(p.sizes)
                         const amount = sumProduct([p.prices, p.sizes])
+                        const size = sum(p.sizes)
+                        const price = amount / size
                         return (
-                          <div key={i} className="siimple-table-row">
-                            <div className="siimple-table-cell">
-                              {date.toLocaleString()}
-                            </div>
-                            <div className="siimple-table-cell">{side}</div>
-                            <div className="siimple-table-cell">
-                              {size.toFixed(3)}
-                            </div>
-                            <div className="siimple-table-cell">
-                              {price.toFixed(0)}
-                            </div>
-                            <div className="siimple-table-cell">
-                              {amount.toFixed(0)}
-                            </div>
-                          </div>
+                          <Tr key={i}>
+                            <Td>{date.toLocaleString()}</Td>
+                            <Td>{side}</Td>
+                            <Td>{size.toFixed(3)}</Td>
+                            <Td>{price.toFixed(0)}</Td>
+                            <Td>{amount.toFixed(0)}</Td>
+                          </Tr>
                         )
                       })
                     }
                   </div>
-                </div>
+                </Table>
               </div>
             )
           }
