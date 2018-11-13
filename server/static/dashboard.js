@@ -31165,13 +31165,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 var ConfidencesView =
 /*#__PURE__*/
@@ -31187,6 +31187,7 @@ function (_React$Component) {
     _this.state = {
       confidences: []
     };
+    _this.clickShowMore = _this.clickShowMore.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
 
@@ -31194,15 +31195,29 @@ function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       console.log('ConfidencesView.componentDidMount');
-      this.getConfidences();
+      this.getConfidences({
+        count: 30
+      });
+    }
+  }, {
+    key: "clickShowMore",
+    value: function clickShowMore(e) {
+      var confidences = this.state.confidences;
+      console.log('showmore');
+      var before = null;
+      if (confidences.length > 0) before = confidences[confidences.length - 1].timestamp;
+      this.getConfidences({
+        before: before,
+        count: 30
+      });
     }
   }, {
     key: "getConfidences",
     value: function () {
       var _getConfidences = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee() {
-        var account, accountId, uri, opts, _ref, response, json;
+      regeneratorRuntime.mark(function _callee(args) {
+        var account, accountId, uri, prop, opts, _ref, response, json;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -31210,48 +31225,56 @@ function (_React$Component) {
               case 0:
                 account = this.context;
                 accountId = account.accountId;
-                uri = "/btctai/".concat(accountId, "/confidences");
+                uri = new URL("/btctai/".concat(accountId, "/confidences"), location.origin);
+
+                for (prop in args) {
+                  if (args[prop] === null) delete args[prop];
+                }
+
+                uri.search = new URLSearchParams(args);
                 console.log("Request confidences, uri:", uri);
                 opts = {
                   method: "GET",
                   enableRefreshToken: true
                 };
-                _context.prev = 5;
-                _context.next = 8;
+                _context.prev = 7;
+                _context.next = 10;
                 return (0, _utils.fetchProtectedJSON)(account, uri, opts);
 
-              case 8:
+              case 10:
                 _ref = _context.sent;
                 response = _ref.response;
                 json = _ref.json;
                 console.log("confidences fetched:", json);
                 this.setState({
-                  confidences: json
+                  confidences: this.state.confidences.concat(json)
                 });
-                _context.next = 19;
+                _context.next = 21;
                 break;
 
-              case 15:
-                _context.prev = 15;
-                _context.t0 = _context["catch"](5);
+              case 17:
+                _context.prev = 17;
+                _context.t0 = _context["catch"](7);
                 console.error("Failed to get values:", _context.t0);
                 return _context.abrupt("return");
 
-              case 19:
+              case 21:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, this, [[5, 15]]);
+        }, _callee, this, [[7, 17]]);
       }));
 
-      return function getConfidences() {
+      return function getConfidences(_x) {
         return _getConfidences.apply(this, arguments);
       };
     }()
   }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       var state = this.state;
       return _react.default.createElement(_contexts.AccountContext.Consumer, null, function (account) {
         console.log("ConfidencesView.render, account:", account, "state:", state);
@@ -31266,7 +31289,10 @@ function (_React$Component) {
           return _react.default.createElement(_tables.Tr, {
             key: i
           }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, Math.round(c.long * 100), " %"), _react.default.createElement(_tables.Td, null, Math.round(c.short * 100), " %"), _react.default.createElement(_tables.Td, null, c.status));
-        }))));
+        }))), _react.default.createElement("div", {
+          className: "siimple-btn siimple-btn--primary siimple-btn--fluid",
+          onClick: _this2.clickShowMore
+        }, "Show more"));
       });
     }
   }]);
@@ -31555,13 +31581,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 var sum = function sum(xs) {
   return xs.reduce(function (i, a) {
@@ -31591,6 +31617,7 @@ function (_React$Component) {
     _this.state = {
       trades: []
     };
+    _this.clickShowMore = _this.clickShowMore.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
 
@@ -31598,15 +31625,28 @@ function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       console.log('TradesView.componentDidMount');
-      this.getTrades();
+      this.getTrades({
+        count: 30
+      });
+    }
+  }, {
+    key: "clickShowMore",
+    value: function clickShowMore(e) {
+      var trades = this.state.trades;
+      var before = null;
+      if (trades.length > 0) before = trades[trades.length - 1].timestamp;
+      this.getTrades({
+        before: before,
+        count: 30
+      });
     }
   }, {
     key: "getTrades",
     value: function () {
       var _getTrades = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee() {
-        var account, accountId, uri, opts, _ref, response, json;
+      regeneratorRuntime.mark(function _callee(args) {
+        var account, accountId, uri, prop, opts, _ref, response, json;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -31614,48 +31654,56 @@ function (_React$Component) {
               case 0:
                 account = this.context;
                 accountId = account.accountId;
-                uri = "/btctai/".concat(accountId, "/trades");
+                uri = new URL("/btctai/".concat(accountId, "/trades"), location.origin);
+
+                for (prop in args) {
+                  if (args[prop] === null) delete args[prop];
+                }
+
+                uri.search = new URLSearchParams(args);
                 console.log("Request values, uri:", uri);
                 opts = {
                   method: "GET",
                   enableRefreshToken: true
                 };
-                _context.prev = 5;
-                _context.next = 8;
+                _context.prev = 7;
+                _context.next = 10;
                 return (0, _utils.fetchProtectedJSON)(account, uri, opts);
 
-              case 8:
+              case 10:
                 _ref = _context.sent;
                 response = _ref.response;
                 json = _ref.json;
                 console.log("Values fetched:", json);
                 this.setState({
-                  trades: json
+                  trades: this.state.trades.concat(json)
                 });
-                _context.next = 19;
+                _context.next = 21;
                 break;
 
-              case 15:
-                _context.prev = 15;
-                _context.t0 = _context["catch"](5);
+              case 17:
+                _context.prev = 17;
+                _context.t0 = _context["catch"](7);
                 console.error("Failed to get values:", _context.t0);
                 return _context.abrupt("return");
 
-              case 19:
+              case 21:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, this, [[5, 15]]);
+        }, _callee, this, [[7, 17]]);
       }));
 
-      return function getTrades() {
+      return function getTrades(_x) {
         return _getTrades.apply(this, arguments);
       };
     }()
   }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       var state = this.state;
       return _react.default.createElement(_contexts.AccountContext.Consumer, null, function (account) {
         console.log("TradesView.render, account:", account, "state:", state);
@@ -31675,7 +31723,10 @@ function (_React$Component) {
           return _react.default.createElement(_tables.Tr, {
             key: i
           }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, side), _react.default.createElement(_tables.Td, null, size.toFixed(3)), _react.default.createElement(_tables.Td, null, price.toFixed(0)), _react.default.createElement(_tables.Td, null, amount.toFixed(0)));
-        }))));
+        }))), _react.default.createElement("div", {
+          className: "siimple-btn siimple-btn--primary siimple-btn--fluid",
+          onClick: _this2.clickShowMore
+        }, "Show more"));
       });
     }
   }]);

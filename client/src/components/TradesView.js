@@ -13,15 +13,26 @@ export default class TradesView extends React.Component {
     this.state = {
       trades: []
     }
+    this.clickShowMore = this.clickShowMore.bind(this)
   }
   componentDidMount() {
     console.log('TradesView.componentDidMount')
-    this.getTrades()
+    this.getTrades({count: 30})
   }
-  async getTrades() {
+  clickShowMore(e) {
+    const trades = this.state.trades
+    let before = null
+    if (trades.length > 0)
+      before = trades[trades.length-1].timestamp
+    this.getTrades({before:before, count:30})
+  }
+  async getTrades(args) {
     const account = this.context
     const accountId = account.accountId
-    const uri = `/btctai/${accountId}/trades`
+    const uri = new URL(`/btctai/${accountId}/trades`, location.origin)
+    for (let prop in args)
+      if (args[prop] === null) delete args[prop]
+    uri.search = new URLSearchParams(args)
     console.log("Request values, uri:", uri)
     const opts = {
       method: "GET",
@@ -30,7 +41,7 @@ export default class TradesView extends React.Component {
     try {
       const {response, json} = await fetchProtectedJSON(account, uri, opts)
       console.log("Values fetched:", json)
-      this.setState({trades: json})
+      this.setState({trades: this.state.trades.concat(json)})
     } catch (error) {
       console.error("Failed to get values:", error)
       return
@@ -79,6 +90,10 @@ export default class TradesView extends React.Component {
                     }
                   </div>
                 </Table>
+                <div className="siimple-btn siimple-btn--primary siimple-btn--fluid"
+                     onClick={this.clickShowMore}>
+                  Show more
+                </div>
               </div>
             )
           }
