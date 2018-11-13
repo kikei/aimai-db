@@ -15,6 +15,12 @@ export function groupBy(f, xs) {
   return groups
 }
 
+export function jpy(v) {
+  return Math.round(v).toLocaleString('ja-JP', {
+    style: 'currency', currency: 'JPY'
+  })
+}
+
 export async function fetchJSON(uri, options) {
   const headers = Object.assign(options.headers || {}, {
     "Content-Type": "application/json; charset=utf-8"

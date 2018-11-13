@@ -1,6 +1,6 @@
 import React from 'react';
 import { AccountContext } from '../contexts/contexts'
-import { fetchProtectedJSON, groupBy } from '../utils'
+import { fetchProtectedJSON, groupBy, jpy } from '../utils'
 import { Table, Tr, Td } from '../components/tables'
 
 const sum = (xs) => xs.reduce((i,a) => i + a, 0)
@@ -86,8 +86,8 @@ export default class TradesView extends React.Component {
                   <Td>{date.toLocaleString()}</Td>
                   <Td>{v.side}</Td>
                   <Td>{v.size.toFixed(3)}</Td>
-                  <Td>{v.price.toFixed(0)}</Td>
-                  <Td>{v.amount.toFixed(0)}</Td>
+                  <Td>{jpy(v.price)}</Td>
+                  <Td>{jpy(v.amount)}</Td>
                 </Tr>
               )
             })
@@ -130,8 +130,8 @@ export default class TradesView extends React.Component {
                             <Td>{date.toLocaleString()}</Td>
                             <Td>{side}</Td>
                             <Td>{size.toFixed(3)}</Td>
-                            <Td>{price.toFixed(0)}</Td>
-                            <Td>{amount.toFixed(0)}</Td>
+                            <Td>{jpy(price)}</Td>
+                            <Td>{jpy(amount)}</Td>
                           </Tr>
                         )
                       })
