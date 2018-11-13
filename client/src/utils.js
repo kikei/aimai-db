@@ -1,3 +1,26 @@
+export function groupBy(f, xs) {
+  const groups = []
+  let g = []
+  for (let i = 0, ylast = null; i < xs.length; i++) {
+    const y = f(xs[i])
+    if (ylast == null || ylast == y) {
+      g.push(xs[i])
+    } else {
+      groups.push(g)
+      g = [xs[i]]
+    }
+    ylast = y
+  }
+  if (g.length > 0) groups.push(g)
+  return groups
+}
+
+export function jpy(v) {
+  return Math.round(v).toLocaleString('ja-JP', {
+    style: 'currency', currency: 'JPY'
+  })
+}
+
 export async function fetchJSON(uri, options) {
   const headers = Object.assign(options.headers || {}, {
     "Content-Type": "application/json; charset=utf-8"

@@ -31603,6 +31603,28 @@ var sumProduct = function sumProduct(xss) {
   }));
 };
 
+var summarizeTrades = function summarizeTrades(ts) {
+  var groups = (0, _utils.groupBy)(function (t) {
+    return t.position.side;
+  }, ts);
+  var sums = groups.map(function (g) {
+    var size = sum(g.map(function (t) {
+      return sum(t.position.sizes);
+    }));
+    var amount = sum(g.map(function (t) {
+      return sumProduct([t.position.prices, t.position.sizes]);
+    }));
+    return {
+      timestamp: g[0].timestamp,
+      side: g[0].position.side,
+      size: size,
+      amount: amount,
+      price: amount / size
+    };
+  });
+  return sums;
+};
+
 var TradesView =
 /*#__PURE__*/
 function (_React$Component) {
@@ -31705,11 +31727,25 @@ function (_React$Component) {
       var _this2 = this;
 
       var state = this.state;
+
+      var Summary = function Summary() {
+        return _react.default.createElement(_tables.Table, null, _react.default.createElement("div", {
+          className: "siimple-table-header"
+        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Date"), _react.default.createElement(_tables.Td, null, "Side"), _react.default.createElement(_tables.Td, null, "Size"), _react.default.createElement(_tables.Td, null, "Price"), _react.default.createElement(_tables.Td, null, "Amount"))), _react.default.createElement("div", {
+          className: "siimple-table-body"
+        }, summarizeTrades(state.trades).map(function (v, i) {
+          var date = new Date(v.timestamp * 1000);
+          return _react.default.createElement(_tables.Tr, {
+            key: i
+          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, v.side), _react.default.createElement(_tables.Td, null, v.size.toFixed(3)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.price)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.amount)));
+        })));
+      };
+
       return _react.default.createElement(_contexts.AccountContext.Consumer, null, function (account) {
         console.log("TradesView.render, account:", account, "state:", state);
         return _react.default.createElement("div", {
           className: "siimple-content"
-        }, _react.default.createElement("h2", null, "Trades"), _react.default.createElement(_tables.Table, null, _react.default.createElement("div", {
+        }, _react.default.createElement("h2", null, "Trades Summary"), _react.default.createElement(Summary, null), _react.default.createElement("h2", null, "Trades"), _react.default.createElement(_tables.Table, null, _react.default.createElement("div", {
           className: "siimple-table-header"
         }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Date"), _react.default.createElement(_tables.Td, null, "Side"), _react.default.createElement(_tables.Td, null, "Size"), _react.default.createElement(_tables.Td, null, "Price"), _react.default.createElement(_tables.Td, null, "Amount"))), _react.default.createElement("div", {
           className: "siimple-table-body"
@@ -31722,7 +31758,7 @@ function (_React$Component) {
           var price = amount / size;
           return _react.default.createElement(_tables.Tr, {
             key: i
-          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, side), _react.default.createElement(_tables.Td, null, size.toFixed(3)), _react.default.createElement(_tables.Td, null, price.toFixed(0)), _react.default.createElement(_tables.Td, null, amount.toFixed(0)));
+          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, side), _react.default.createElement(_tables.Td, null, size.toFixed(3)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(price)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(amount)));
         }))), _react.default.createElement("div", {
           className: "siimple-btn siimple-btn--primary siimple-btn--fluid",
           onClick: _this2.clickShowMore
@@ -32288,6 +32324,8 @@ _reactDom.default.render(_react.default.createElement(_reactRouterDom.BrowserRou
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.groupBy = groupBy;
+exports.jpy = jpy;
 exports.fetchJSON = fetchJSON;
 exports.fetchProtectedJSON = fetchProtectedJSON;
 
@@ -32300,6 +32338,34 @@ __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/m
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function groupBy(f, xs) {
+  var groups = [];
+  var g = [];
+
+  for (var i = 0, ylast = null; i < xs.length; i++) {
+    var y = f(xs[i]);
+
+    if (ylast == null || ylast == y) {
+      g.push(xs[i]);
+    } else {
+      groups.push(g);
+      g = [xs[i]];
+    }
+
+    ylast = y;
+  }
+
+  if (g.length > 0) groups.push(g);
+  return groups;
+}
+
+function jpy(v) {
+  return Math.round(v).toLocaleString('ja-JP', {
+    style: 'currency',
+    currency: 'JPY'
+  });
+}
 
 function fetchJSON(_x, _x2) {
   return _fetchJSON.apply(this, arguments);

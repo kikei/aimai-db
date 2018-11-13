@@ -1,11 +1,28 @@
 import React from 'react';
 import { AccountContext } from '../contexts/contexts'
-import { fetchProtectedJSON } from '../utils'
+import { fetchProtectedJSON, groupBy, jpy } from '../utils'
 import { Table, Tr, Td } from '../components/tables'
 
 const sum = (xs) => xs.reduce((i,a) => i + a, 0)
 const sumProduct = (xss) =>
       sum(xss[0].map((_, i) => xss.reduce((a, xs) => a * xs[i], 1)))
+
+const summarizeTrades = (ts) => {
+  const groups = groupBy(t => t.position.side, ts)
+  const sums = groups.map(g => {
+    const size = sum(g.map(t => sum(t.position.sizes)))
+    const amount = sum(g.map(t => sumProduct([t.position.prices,
+                                              t.position.sizes])))
+    return {
+      timestamp: g[0].timestamp,
+      side: g[0].position.side,
+      size: size,
+      amount: amount,
+      price: amount / size
+    }
+  })
+  return sums
+}
 
 export default class TradesView extends React.Component {
   constructor(props) {
@@ -49,6 +66,35 @@ export default class TradesView extends React.Component {
   }
   render() {
     const state = this.state
+    const Summary = () => (
+      <Table>
+        <div className="siimple-table-header">
+          <Tr>
+            <Td>Date</Td>
+            <Td>Side</Td>
+            <Td>Size</Td>
+            <Td>Price</Td>
+            <Td>Amount</Td>
+          </Tr>
+        </div>
+        <div className="siimple-table-body">
+          {
+            summarizeTrades(state.trades).map((v, i) => {
+              const date = new Date(v.timestamp * 1000)
+              return (
+                <Tr key={i}>
+                  <Td>{date.toLocaleString()}</Td>
+                  <Td>{v.side}</Td>
+                  <Td>{v.size.toFixed(3)}</Td>
+                  <Td>{jpy(v.price)}</Td>
+                  <Td>{jpy(v.amount)}</Td>
+                </Tr>
+              )
+            })
+          }
+        </div>
+      </Table>
+    )
     return (
       <AccountContext.Consumer>
         {
@@ -57,6 +103,8 @@ export default class TradesView extends React.Component {
                         "state:", state)
             return (
               <div className="siimple-content">
+                <h2>Trades Summary</h2>
+                <Summary/>
                 <h2>Trades</h2>
                 <Table>
                   <div className="siimple-table-header">
@@ -82,8 +130,8 @@ export default class TradesView extends React.Component {
                             <Td>{date.toLocaleString()}</Td>
                             <Td>{side}</Td>
                             <Td>{size.toFixed(3)}</Td>
-                            <Td>{price.toFixed(0)}</Td>
-                            <Td>{amount.toFixed(0)}</Td>
+                            <Td>{jpy(price)}</Td>
+                            <Td>{jpy(amount)}</Td>
                           </Tr>
                         )
                       })
