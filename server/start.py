@@ -17,7 +17,7 @@ DIR_LIBS = os.path.join(CWD, '..', '..', 'libs')
 sys.path.append(os.path.join(DIR_LIBS, 'btcbot1', 'apps', 'trade', 'src'))
 
 from main import getDBInstance, getModels
-from classes import Confidence
+from classes import Confidence, strToDatetime
 
 dbi = getDBInstance()
 dashbModels = DashboardModels(dbi)
@@ -27,6 +27,7 @@ modelAccounts = dashbModels.Accounts
 modelValues = btctaiModels.Values
 modelConfidences = btctaiModels.Confidences
 modelTrades = btctaiModels.Trades
+modelTicks = btctaiModels.Ticks
 
 # markets = Markets()
 
@@ -75,6 +76,30 @@ def getAccount(accountId):
     'username': obj['username']
   }
   return flask.jsonify(account)
+
+@app.route('/ticks', methods=['GET'])
+@flask_jwt.jwt_required
+def getTicks():
+  exchangers = flask.request.args.get('exchangers', None)
+  start = flask.request.args.get('start', None)
+  end = flask.request.args.get('end', None)
+  try:
+    if exchangers is not None:
+      exchangers = exchangers.split(',')
+    if start is not None:
+      start = float(start)
+    if end is not None:
+      end = float(end)
+  except ValueError as e:
+    flask.abort(400)
+  ticks = modelTicks.all(exchangers=exchangers, start=start, end=end)
+  def toDict(tick):
+    obj = tick.to_dict()
+    t = strToDatetime(obj.pop('datetime')).timestamp()
+    obj['time'] = t
+    return obj
+  ticks = {e: [toDict(t) for t in ticks[e]] for e in ticks}
+  return json.dumps({'ticks': ticks})
 
 @app.route('/btctai/<string:accountId>/values', methods=['GET'])
 @flask_jwt.jwt_required
