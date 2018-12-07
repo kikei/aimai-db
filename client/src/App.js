@@ -5,6 +5,7 @@ import HomeView from './components/HomeView';
 import LoginView from './components/LoginView';
 import ValuesView from './components/ValuesView';
 import TradesView from './components/TradesView';
+import PositionsView from './components/PositionsView.js';
 import ConfidencesView from './components/ConfidencesView';
 import { AccountContext } from './contexts/contexts';
 import { fetchJSON, fetchProtectedJSON } from './utils'
@@ -144,6 +145,7 @@ class App extends Component {
           <Link to="/values" className="siimple-navbar-item">Values</Link>
           <Link to="/trades" className="siimple-navbar-item">Trades</Link>
           <Link to="/confidences" className="siimple-navbar-item">Confidences</Link>
+          <Link to="/positions" className="siimple-navbar-item">Positions</Link>
           {this.isLoggedIn() ? (
             <a className="siimple-navbar-item" onClick={this.logout}>
             Logout
@@ -161,7 +163,8 @@ class App extends Component {
           <Route path="/login" component={LoginView}/>
           <Route path="/values" render={this.requireLogin(<ValuesView/>)}/> 
           <Route path="/trades" render={this.requireLogin(<TradesView/>)}/> 
-          <Route path="/Confidences" render={this.requireLogin(<ConfidencesView/>)}/> 
+          <Route path="/Confidences" render={this.requireLogin(<ConfidencesView/>)}/>
+          <Route path="/Positions" render={this.requireLogin(<PositionsView/>)}/>
         </Switch>
       </AccountContext.Provider>
     )

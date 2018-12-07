@@ -27,6 +27,7 @@ modelAccounts = dashbModels.Accounts
 modelValues = btctaiModels.Values
 modelConfidences = btctaiModels.Confidences
 modelTrades = btctaiModels.Trades
+modelPositions = btctaiModels.Positions
 modelTicks = btctaiModels.Ticks
 
 # markets = Markets()
@@ -149,6 +150,25 @@ def getBtctaiTrades(accountId):
   except ValueError as e:
     flask.abort(400)
   trades = modelTrades.all(accountId=identity, before=before, count=count)
+  trades = [t.toDict() for t in trades]
+  return flask.jsonify(trades)
+
+@app.route('/btctai/<string:accountId>/positions', methods=['GET'])
+@flask_jwt.jwt_required
+def getBtctaiPositions(accountId):
+  identity = flask_jwt.get_jwt_identity()
+  if accountId != identity:
+    flask.abort(403)
+  count = flask.request.args.get('count', None)
+  before = flask.request.args.get('before', None)
+  try:
+    if count is not None:
+      count = int(count)
+    if before is not None:
+      before = float(before)
+  except ValueError as e:
+    flask.abort(400)
+  trades = modelPositions.all(accountId=identity, before=before, count=count)
   trades = [t.toDict() for t in trades]
   return flask.jsonify(trades)
 

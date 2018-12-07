@@ -2,5 +2,4 @@ PyMongo
 PyJWT
 Flask-JWT-Extended
 numpy
-python3-matplotlib
 bson
