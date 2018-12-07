@@ -83,6 +83,8 @@ def getTicks():
   exchangers = flask.request.args.get('exchangers', None)
   start = flask.request.args.get('start', None)
   end = flask.request.args.get('end', None)
+  limit = flask.request.args.get('limit', None)
+  order = flask.request.args.get('order', None)
   try:
     if exchangers is not None:
       exchangers = exchangers.split(',')
@@ -90,15 +92,15 @@ def getTicks():
       start = float(start)
     if end is not None:
       end = float(end)
+    if limit is not None:
+      limit = int(limit)
+    if order is not None:
+      order = int(order)
   except ValueError as e:
     flask.abort(400)
-  ticks = modelTicks.all(exchangers=exchangers, start=start, end=end)
-  def toDict(tick):
-    obj = tick.to_dict()
-    t = strToDatetime(obj.pop('datetime')).timestamp()
-    obj['time'] = t
-    return obj
-  ticks = {e: [toDict(t) for t in ticks[e]] for e in ticks}
+  ticks = modelTicks.all(exchangers=exchangers,
+                         start=start, end=end, limit=limit, order=order)
+  ticks = {e: [t.toDict() for t in ticks[e]] for e in ticks}
   return json.dumps({'ticks': ticks})
 
 @app.route('/btctai/<string:accountId>/values', methods=['GET'])
