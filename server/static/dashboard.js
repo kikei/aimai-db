@@ -30787,6 +30787,8 @@ var _ValuesView = _interopRequireDefault(__webpack_require__(/*! ./components/Va
 
 var _TradesView = _interopRequireDefault(__webpack_require__(/*! ./components/TradesView */ "./src/components/TradesView.js"));
 
+var _PositionsView = _interopRequireDefault(__webpack_require__(/*! ./components/PositionsView.js */ "./src/components/PositionsView.js"));
+
 var _ConfidencesView = _interopRequireDefault(__webpack_require__(/*! ./components/ConfidencesView */ "./src/components/ConfidencesView.js"));
 
 var _contexts = __webpack_require__(/*! ./contexts/contexts */ "./src/contexts/contexts.js");
@@ -31060,7 +31062,10 @@ function (_Component) {
       }, "Trades"), _react.default.createElement(_reactRouterDom.Link, {
         to: "/confidences",
         className: "siimple-navbar-item"
-      }, "Confidences"), this.isLoggedIn() ? _react.default.createElement("a", {
+      }, "Confidences"), _react.default.createElement(_reactRouterDom.Link, {
+        to: "/positions",
+        className: "siimple-navbar-item"
+      }, "Positions"), this.isLoggedIn() ? _react.default.createElement("a", {
         className: "siimple-navbar-item",
         onClick: this.logout
       }, "Logout") : _react.default.createElement(_reactRouterDom.Link, {
@@ -31086,6 +31091,9 @@ function (_Component) {
       }), _react.default.createElement(_reactRouterDom.Route, {
         path: "/Confidences",
         render: this.requireLogin(_react.default.createElement(_ConfidencesView.default, null))
+      }), _react.default.createElement(_reactRouterDom.Route, {
+        path: "/Positions",
+        render: this.requireLogin(_react.default.createElement(_PositionsView.default, null))
       })));
 
       var Home = function Home() {
@@ -31531,6 +31539,224 @@ function (_React$Component) {
 
 exports.default = LoginView;
 LoginView.contextType = _contexts.AccountContext;
+
+/***/ }),
+
+/***/ "./src/components/PositionsView.js":
+/*!*****************************************!*\
+  !*** ./src/components/PositionsView.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+__webpack_require__(/*! core-js/modules/es7.symbol.async-iterator */ "./node_modules/core-js/modules/es7.symbol.async-iterator.js");
+
+__webpack_require__(/*! core-js/modules/es6.symbol */ "./node_modules/core-js/modules/es6.symbol.js");
+
+__webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+
+__webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+
+var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+
+var _contexts = __webpack_require__(/*! ../contexts/contexts */ "./src/contexts/contexts.js");
+
+var _utils = __webpack_require__(/*! ../utils */ "./src/utils.js");
+
+var _tables = __webpack_require__(/*! ../components/tables */ "./src/components/tables.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+var sum = function sum(xs) {
+  return xs.reduce(function (i, a) {
+    return i + a;
+  }, 0);
+};
+
+var sumProduct = function sumProduct(xss) {
+  return sum(xss[0].map(function (_, i) {
+    return xss.reduce(function (a, xs) {
+      return a * xs[i];
+    }, 1);
+  }));
+};
+
+var PositionsView =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(PositionsView, _React$Component);
+
+  function PositionsView(props) {
+    var _this;
+
+    _classCallCheck(this, PositionsView);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PositionsView).call(this, props));
+    _this.state = {
+      positions: [],
+      board: {
+        datetime: null,
+        ask: 740000,
+        bid: 739887
+      }
+    };
+    _this.clickShowMore = _this.clickShowMore.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    return _this;
+  }
+
+  _createClass(PositionsView, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      console.log('PositionsView.componentDidMount');
+      this.getPositions({
+        count: 30
+      });
+    }
+  }, {
+    key: "clickShowMore",
+    value: function clickShowMore(e) {
+      var positions = this.state.positions;
+      var before = null;
+      if (positions.length > 0) before = positions[positions.length - 1].timestamp;
+      this.getPositions({
+        before: before,
+        count: 30
+      });
+    }
+  }, {
+    key: "getPositions",
+    value: function () {
+      var _getPositions = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee(args) {
+        var account, accountId, uri, prop, opts, _ref, response, json;
+
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                account = this.context;
+                accountId = account.accountId;
+                uri = new URL("/btctai/".concat(accountId, "/positions"), location.origin);
+
+                for (prop in args) {
+                  if (args[prop] === null) delete args[prop];
+                }
+
+                uri.search = new URLSearchParams(args);
+                console.log("Request values, uri:", uri);
+                opts = {
+                  method: "GET",
+                  enableRefreshToken: true
+                };
+                _context.prev = 7;
+                _context.next = 10;
+                return (0, _utils.fetchProtectedJSON)(account, uri, opts);
+
+              case 10:
+                _ref = _context.sent;
+                response = _ref.response;
+                json = _ref.json;
+                console.log("Positions fetched:", json);
+                this.setState({
+                  positions: this.state.positions.concat(json)
+                });
+                _context.next = 21;
+                break;
+
+              case 17:
+                _context.prev = 17;
+                _context.t0 = _context["catch"](7);
+                console.error("Failed to get positions:", _context.t0);
+                return _context.abrupt("return");
+
+              case 21:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this, [[7, 17]]);
+      }));
+
+      return function getPositions(_x) {
+        return _getPositions.apply(this, arguments);
+      };
+    }()
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var state = this.state;
+      return _react.default.createElement(_contexts.AccountContext.Consumer, null, function (account) {
+        console.log("PositionsView.render, account:", account, "state:", state);
+        return _react.default.createElement("div", {
+          className: "siimple-content"
+        }, _react.default.createElement("h2", null, "Positions"), _react.default.createElement(_tables.Table, null, _react.default.createElement("div", {
+          className: "siimple-table-header"
+        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Date"), _react.default.createElement(_tables.Td, null, "Status"), _react.default.createElement(_tables.Td, null, "Size"), _react.default.createElement(_tables.Td, null, "Price"), _react.default.createElement(_tables.Td, null, "Amount"), _react.default.createElement(_tables.Td, null, "Side"), _react.default.createElement(_tables.Td, null, "Variate"), _react.default.createElement(_tables.Td, null, "Profit"))), _react.default.createElement("div", {
+          className: "siimple-table-body"
+        }, state.positions.map(function (v, i) {
+          var date = new Date(v.timestamp * 1000);
+          var status = v.status; // Now support only single position
+
+          var p = v.positions[0];
+          var side = p.side;
+          var amount = sumProduct([p.prices, p.sizes]);
+          var size = sum(p.sizes);
+          var price = amount / size;
+          var _state$board = state.board,
+              ask = _state$board.ask,
+              bid = _state$board.bid;
+          var currentPrice = side == 'LONG' ? bid : ask;
+          var variated = currentPrice / price;
+          var profit = side == 'LONG' ? bid - price : price - ask;
+          return _react.default.createElement(_tables.Tr, {
+            key: i
+          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, status), _react.default.createElement(_tables.Td, null, size.toFixed(3)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(price)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(amount)), _react.default.createElement(_tables.Td, null, side), _react.default.createElement(_tables.Td, null, status == 'open' ? (100 * variated).toFixed(4) + '%' : '-'), _react.default.createElement(_tables.Td, null, status == 'open' ? (0, _utils.jpy)(profit * size) : '-'));
+        }))), _react.default.createElement("div", {
+          className: "siimple-btn siimple-btn--primary siimple-btn--fluid",
+          onClick: _this2.clickShowMore
+        }, "Show more"));
+      });
+    }
+  }]);
+
+  return PositionsView;
+}(_react.default.Component);
+
+exports.default = PositionsView;
+PositionsView.contextType = _contexts.AccountContext;
 
 /***/ }),
 
