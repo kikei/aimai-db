@@ -386,26 +386,33 @@ def getOptions(args):
     import getopt
     try:
         opts, args = getopt.getopt(args,
-                                   'hC:',
+                                   'hCp:',
                                    ['help',
-                                    'create'])
+                                    'create',
+                                    'port='])
     except getopt.GetoptError:
         return {'mode': 'main'}
+    options = {
+      'mode': 'main',
+      'port': None
+    }
     for opt, arg in opts:
         if opt in ('-h', '--help'):
-            return {'mode': 'help'}
+           options['mode'] = 'help'
         elif opt in ('-C', '--create'):
-            return {'mode': 'add_user',
-                    'username': arg}
-    return {'mode': 'main'}
+           options['mode'] = 'add_user'
+           options['username'] = arg
+        elif opt in ('-p', '--port'):
+           options['port'] = arg
+    return options
 
-def runMain():
+def runMain(port=None):
   accounts = modelAccounts.all()
   if len(list(accounts)) == 0:
     requestUserSetting()
     exit()
   app.debug = True # デバッグモード有効化
-  app.run(host='0.0.0.0') # どこからでもアクセス可能に
+  app.run(host='0.0.0.0', port=port)
 
 def runAddUser(username):
   import getpass
@@ -421,16 +428,17 @@ def print_help():
 
 Options:
     -C, --create         Create login user.
+    -p, --port           Port to LISTEN (default 5000).
     -h, --help           Show this help.
 """
     print(msg.format(script=sys.argv[0]))
 
 if __name__ == '__main__':
-    mode = getOptions(sys.argv[1:])
-    if mode['mode'] == 'main':
-        runMain()
-    elif mode['mode'] == 'add_user':
-        runAddUser(mode['username'])
+    options = getOptions(sys.argv[1:])
+    if options['mode'] == 'main':
+        runMain(port=options['port'])
+    elif options['mode'] == 'add_user':
+        runAddUser(options['username'])
     else:
         print_help()
     
