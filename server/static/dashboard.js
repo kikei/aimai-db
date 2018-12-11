@@ -31626,8 +31626,8 @@ function (_React$Component) {
       positions: [],
       board: {
         datetime: null,
-        ask: 740000,
-        bid: 739887
+        ask: null,
+        bid: null
       }
     };
     _this.clickShowMore = _this.clickShowMore.bind(_assertThisInitialized(_assertThisInitialized(_this)));
@@ -31640,6 +31640,10 @@ function (_React$Component) {
       console.log('PositionsView.componentDidMount');
       this.getPositions({
         count: 30
+      });
+      this.getTick({
+        exchangers: ['bitflyer'],
+        limit: 1
       });
     }
   }, {
@@ -31713,6 +31717,69 @@ function (_React$Component) {
       };
     }()
   }, {
+    key: "getTick",
+    value: function () {
+      var _getTick = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee2(args) {
+        var account, exchanger, uri, opts, _ref2, response, json, ticks, _ticks$, date, ask, bid;
+
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                account = this.context;
+                exchanger = args.exchangers[0];
+                uri = new URL('/ticks', location.origin);
+                uri.search = new URLSearchParams(args);
+                console.log("Request values, uri:", uri);
+                opts = {
+                  method: "GET"
+                };
+                _context2.prev = 6;
+                _context2.next = 9;
+                return (0, _utils.fetchProtectedJSON)(account, uri, opts);
+
+              case 9:
+                _ref2 = _context2.sent;
+                response = _ref2.response;
+                json = _ref2.json;
+                console.log("Ticks fetched:", json);
+                ticks = json.ticks[exchanger];
+
+                if (ticks.length > 0) {
+                  _ticks$ = ticks[0], date = _ticks$.date, ask = _ticks$.ask, bid = _ticks$.bid;
+                  this.setState({
+                    board: {
+                      date: date,
+                      ask: ask,
+                      bid: bid
+                    }
+                  });
+                }
+
+                _context2.next = 21;
+                break;
+
+              case 17:
+                _context2.prev = 17;
+                _context2.t0 = _context2["catch"](6);
+                console.error("Failed to get ticks:", _context2.t0);
+                return _context2.abrupt("return");
+
+              case 21:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this, [[6, 17]]);
+      }));
+
+      return function getTick(_x2) {
+        return _getTick.apply(this, arguments);
+      };
+    }()
+  }, {
     key: "render",
     value: function render() {
       var _this2 = this;
@@ -31739,7 +31806,7 @@ function (_React$Component) {
               ask = _state$board.ask,
               bid = _state$board.bid;
           var currentPrice = side == 'LONG' ? bid : ask;
-          var variated = currentPrice / price;
+          var variated = currentPrice / (price || -1);
           var profit = side == 'LONG' ? bid - price : price - ask;
           return _react.default.createElement(_tables.Tr, {
             key: i
