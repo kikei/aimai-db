@@ -85,7 +85,7 @@ def getTicks():
   start = flask.request.args.get('start', None)
   end = flask.request.args.get('end', None)
   limit = flask.request.args.get('limit', None)
-  order = flask.request.args.get('order', None)
+  order = flask.request.args.get('order', -1)
   try:
     if exchangers is not None:
       exchangers = exchangers.split(',')

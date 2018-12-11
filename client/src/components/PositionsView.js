@@ -14,8 +14,8 @@ export default class PositionsView extends React.Component {
       positions: [],
       board: {
         datetime: null,
-        ask: 740000,
-        bid: 739887
+        ask: null,
+        bid: null
       }
     }
     this.clickShowMore = this.clickShowMore.bind(this)
@@ -23,6 +23,7 @@ export default class PositionsView extends React.Component {
   componentDidMount() {
     console.log('PositionsView.componentDidMount')
     this.getPositions({count: 30})
+    this.getTick({exchangers: ['bitflyer'], limit: 1})
   }
   clickShowMore(e) {
     const positions = this.state.positions
@@ -52,6 +53,29 @@ export default class PositionsView extends React.Component {
       return
     }
   }
+  async getTick(args) {
+    const account = this.context
+    const exchanger = args.exchangers[0]
+    const uri = new URL('/ticks', location.origin)
+    uri.search = new URLSearchParams(args)
+    console.log("Request values, uri:", uri)
+    const opts = {
+      method: "GET"
+    }
+    try {
+      const {response, json} = await fetchProtectedJSON(account, uri, opts)
+      console.log("Ticks fetched:", json)
+      const ticks = json.ticks[exchanger]
+      if (ticks.length > 0) {
+        const {date, ask, bid} = ticks[0]
+        this.setState({board: {date: date, ask: ask, bid: bid}})
+      }
+    } catch (error) {
+      console.error("Failed to get ticks:", error)
+      return
+    }
+  }
+
   render() {
     const state = this.state
     return (
@@ -89,7 +113,7 @@ export default class PositionsView extends React.Component {
                         const price = amount / size
                         const {ask, bid} = state.board
                         const currentPrice = side == 'LONG' ? bid : ask
-                        const variated = currentPrice / price
+                        const variated = currentPrice / (price || -1)
                         const profit = side == 'LONG' ? bid - price : price - ask
                         return (
                           <Tr key={i}>
