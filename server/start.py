@@ -17,7 +17,7 @@ DIR_LIBS = os.path.join(CWD, '..', '..', 'libs')
 sys.path.append(os.path.join(DIR_LIBS, 'btcbot1', 'apps', 'trade', 'src'))
 
 from main import getDBInstance, getModels
-from classes import Confidence, strToDatetime
+from classes import Confidence, Position, strToDatetime
 
 dbi = getDBInstance()
 dashbModels = DashboardModels(dbi)
@@ -171,6 +171,22 @@ def getBtctaiPositions(accountId):
   trades = modelPositions.all(accountId=identity, before=before, count=count)
   trades = [t.toDict() for t in trades]
   return flask.jsonify(trades)
+
+@app.route('/btctai/<string:accountId>/positions/<string:timestamp>',
+           methods=['POST'])
+@flask_jwt.jwt_required
+def postBtctaiPositions(accountId, timestamp):
+  identity = flask_jwt.get_jwt_identity()
+  if accountId != identity:
+    flask.abort(403)
+  obj = flask.request.get_json()
+  position = modelPositions.one(accountId, timestamp=float(timestamp))
+  position = position.toDict()
+  obj = {**position, **obj}
+  position = Position.fromDict(obj)
+  position = modelPositions.save(position, accountId=accountId)
+  obj = position.toDict()
+  return flask.jsonify(obj)
 
 @app.route('/btctai/<string:accountId>/confidences', methods=['GET'])
 @flask_jwt.jwt_required
@@ -384,6 +400,10 @@ Run following command:
 
 def getOptions(args):
     import getopt
+    options = {
+      'mode': 'main',
+      'port': None
+    }
     try:
         opts, args = getopt.getopt(args,
                                    'hCp:',
@@ -391,11 +411,7 @@ def getOptions(args):
                                     'create',
                                     'port='])
     except getopt.GetoptError:
-        return {'mode': 'main'}
-    options = {
-      'mode': 'main',
-      'port': None
-    }
+        return options
     for opt, arg in opts:
         if opt in ('-h', '--help'):
            options['mode'] = 'help'

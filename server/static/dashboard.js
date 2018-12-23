@@ -4060,6 +4060,251 @@ module.exports = hoistNonReactStatics;
 
 /***/ }),
 
+/***/ "./node_modules/immutability-helper/index.js":
+/*!***************************************************!*\
+  !*** ./node_modules/immutability-helper/index.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var invariant = __webpack_require__(/*! invariant */ "./node_modules/invariant/browser.js");
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var splice = Array.prototype.splice;
+var toString = Object.prototype.toString;
+function type(obj) {
+    return toString.call(obj).slice(8, -1);
+}
+var assign = Object.assign || /* istanbul ignore next */ (function (target, source) {
+    getAllKeys(source).forEach(function (key) {
+        if (hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+        }
+    });
+    return target;
+});
+var getAllKeys = typeof Object.getOwnPropertySymbols === 'function'
+    ? function (obj) { return Object.keys(obj).concat(Object.getOwnPropertySymbols(obj)); }
+    /* istanbul ignore next */
+    : function (obj) { return Object.keys(obj); };
+function copy(object) {
+    return Array.isArray(object)
+        ? assign(object.constructor(object.length), object)
+        : (type(object) === 'Map')
+            ? new Map(object)
+            : (type(object) === 'Set')
+                ? new Set(object)
+                : (object && typeof object === 'object')
+                    ? assign(Object.create(Object.getPrototypeOf(object)), object)
+                    /* istanbul ignore next */
+                    : object;
+}
+var Context = /** @class */ (function () {
+    function Context() {
+        this.commands = assign({}, defaultCommands);
+        this.update = this.update.bind(this);
+        // Deprecated: update.extend, update.isEquals and update.newContext
+        this.update.extend = this.extend = this.extend.bind(this);
+        this.update.isEquals = function (x, y) { return x === y; };
+        this.update.newContext = function () { return new Context().update; };
+    }
+    Object.defineProperty(Context.prototype, "isEquals", {
+        get: function () {
+            return this.update.isEquals;
+        },
+        set: function (value) {
+            this.update.isEquals = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Context.prototype.extend = function (directive, fn) {
+        this.commands[directive] = fn;
+    };
+    Context.prototype.update = function (object, $spec) {
+        var _this = this;
+        var spec = (typeof $spec === 'function') ? { $apply: $spec } : $spec;
+        if (!(Array.isArray(object) && Array.isArray(spec))) {
+            invariant(!Array.isArray(spec), 'update(): You provided an invalid spec to update(). The spec may ' +
+                'not contain an array except as the value of $set, $push, $unshift, ' +
+                '$splice or any custom command allowing an array value.');
+        }
+        invariant(typeof spec === 'object' && spec !== null, 'update(): You provided an invalid spec to update(). The spec and ' +
+            'every included key path must be plain objects containing one of the ' +
+            'following commands: %s.', Object.keys(this.commands).join(', '));
+        var nextObject = object;
+        getAllKeys(spec).forEach(function (key) {
+            if (hasOwnProperty.call(_this.commands, key)) {
+                var objectWasNextObject = object === nextObject;
+                nextObject = _this.commands[key](spec[key], nextObject, spec, object);
+                if (objectWasNextObject && _this.isEquals(nextObject, object)) {
+                    nextObject = object;
+                }
+            }
+            else {
+                var nextValueForKey = type(object) === 'Map'
+                    ? _this.update(object.get(key), spec[key])
+                    : _this.update(object[key], spec[key]);
+                var nextObjectValue = type(nextObject) === 'Map'
+                    ? nextObject.get(key)
+                    : nextObject[key];
+                if (!_this.isEquals(nextValueForKey, nextObjectValue)
+                    || typeof nextValueForKey === 'undefined'
+                        && !hasOwnProperty.call(object, key)) {
+                    if (nextObject === object) {
+                        nextObject = copy(object);
+                    }
+                    if (type(nextObject) === 'Map') {
+                        nextObject.set(key, nextValueForKey);
+                    }
+                    else {
+                        nextObject[key] = nextValueForKey;
+                    }
+                }
+            }
+        });
+        return nextObject;
+    };
+    return Context;
+}());
+exports.Context = Context;
+var defaultCommands = {
+    $push: function (value, nextObject, spec) {
+        invariantPushAndUnshift(nextObject, spec, '$push');
+        return value.length ? nextObject.concat(value) : nextObject;
+    },
+    $unshift: function (value, nextObject, spec) {
+        invariantPushAndUnshift(nextObject, spec, '$unshift');
+        return value.length ? value.concat(nextObject) : nextObject;
+    },
+    $splice: function (value, nextObject, spec, originalObject) {
+        invariantSplices(nextObject, spec);
+        value.forEach(function (args) {
+            invariantSplice(args);
+            if (nextObject === originalObject && args.length) {
+                nextObject = copy(originalObject);
+            }
+            splice.apply(nextObject, args);
+        });
+        return nextObject;
+    },
+    $set: function (value, _nextObject, spec) {
+        invariantSet(spec);
+        return value;
+    },
+    $toggle: function (targets, nextObject) {
+        invariantSpecArray(targets, '$toggle');
+        var nextObjectCopy = targets.length ? copy(nextObject) : nextObject;
+        targets.forEach(function (target) {
+            nextObjectCopy[target] = !nextObject[target];
+        });
+        return nextObjectCopy;
+    },
+    $unset: function (value, nextObject, _spec, originalObject) {
+        invariantSpecArray(value, '$unset');
+        value.forEach(function (key) {
+            if (Object.hasOwnProperty.call(nextObject, key)) {
+                if (nextObject === originalObject) {
+                    nextObject = copy(originalObject);
+                }
+                delete nextObject[key];
+            }
+        });
+        return nextObject;
+    },
+    $add: function (values, nextObject, _spec, originalObject) {
+        invariantMapOrSet(nextObject, '$add');
+        invariantSpecArray(values, '$add');
+        if (type(nextObject) === 'Map') {
+            values.forEach(function (_a) {
+                var key = _a[0], value = _a[1];
+                if (nextObject === originalObject && nextObject.get(key) !== value) {
+                    nextObject = copy(originalObject);
+                }
+                nextObject.set(key, value);
+            });
+        }
+        else {
+            values.forEach(function (value) {
+                if (nextObject === originalObject && !nextObject.has(value)) {
+                    nextObject = copy(originalObject);
+                }
+                nextObject.add(value);
+            });
+        }
+        return nextObject;
+    },
+    $remove: function (value, nextObject, _spec, originalObject) {
+        invariantMapOrSet(nextObject, '$remove');
+        invariantSpecArray(value, '$remove');
+        value.forEach(function (key) {
+            if (nextObject === originalObject && nextObject.has(key)) {
+                nextObject = copy(originalObject);
+            }
+            nextObject.delete(key);
+        });
+        return nextObject;
+    },
+    $merge: function (value, nextObject, _spec, originalObject) {
+        invariantMerge(nextObject, value);
+        getAllKeys(value).forEach(function (key) {
+            if (value[key] !== nextObject[key]) {
+                if (nextObject === originalObject) {
+                    nextObject = copy(originalObject);
+                }
+                nextObject[key] = value[key];
+            }
+        });
+        return nextObject;
+    },
+    $apply: function (value, original) {
+        invariantApply(value);
+        return value(original);
+    },
+};
+var defaultContext = new Context();
+exports.isEquals = defaultContext.update.isEquals;
+exports.extend = defaultContext.extend;
+exports.default = defaultContext.update;
+// @ts-ignore
+exports.default.default = module.exports = assign(exports.default, exports);
+// invariants
+function invariantPushAndUnshift(value, spec, command) {
+    invariant(Array.isArray(value), 'update(): expected target of %s to be an array; got %s.', command, value);
+    invariantSpecArray(spec[command], command);
+}
+function invariantSpecArray(spec, command) {
+    invariant(Array.isArray(spec), 'update(): expected spec of %s to be an array; got %s. ' +
+        'Did you forget to wrap your parameter in an array?', command, spec);
+}
+function invariantSplices(value, spec) {
+    invariant(Array.isArray(value), 'Expected $splice target to be an array; got %s', value);
+    invariantSplice(spec.$splice);
+}
+function invariantSplice(value) {
+    invariant(Array.isArray(value), 'update(): expected spec of $splice to be an array of arrays; got %s. ' +
+        'Did you forget to wrap your parameters in an array?', value);
+}
+function invariantApply(fn) {
+    invariant(typeof fn === 'function', 'update(): expected spec of $apply to be a function; got %s.', fn);
+}
+function invariantSet(spec) {
+    invariant(Object.keys(spec).length === 1, 'Cannot have more than one key in an object with $set');
+}
+function invariantMerge(target, specValue) {
+    invariant(specValue && typeof specValue === 'object', 'update(): $merge expects a spec of type \'object\'; got %s', specValue);
+    invariant(target && typeof target === 'object', 'update(): $merge expects a target of type \'object\'; got %s', target);
+}
+function invariantMapOrSet(target, command) {
+    var typeOfTarget = type(target);
+    invariant(typeOfTarget === 'Map' || typeOfTarget === 'Set', 'update(): %s expects a target of type Set or Map; got %s', command, typeOfTarget);
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/invariant/browser.js":
 /*!*******************************************!*\
   !*** ./node_modules/invariant/browser.js ***!
@@ -31567,6 +31812,8 @@ __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerat
 
 var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
 
+var _immutabilityHelper = _interopRequireDefault(__webpack_require__(/*! immutability-helper */ "./node_modules/immutability-helper/index.js"));
+
 var _contexts = __webpack_require__(/*! ../contexts/contexts */ "./src/contexts/contexts.js");
 
 var _utils = __webpack_require__(/*! ../utils */ "./src/utils.js");
@@ -31576,6 +31823,8 @@ var _tables = __webpack_require__(/*! ../components/tables */ "./src/components/
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -31628,8 +31877,14 @@ function (_React$Component) {
         datetime: null,
         ask: null,
         bid: null
+      },
+      editStatus: {
+        index: null,
+        status: null
       }
     };
+    _this.clickStatus = _this.clickStatus.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.changeStatus = _this.changeStatus.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.clickShowMore = _this.clickShowMore.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
@@ -31644,6 +31899,28 @@ function (_React$Component) {
       this.getTick({
         exchangers: ['bitflyer'],
         limit: 1
+      });
+    }
+  }, {
+    key: "clickStatus",
+    value: function clickStatus(i, e) {
+      console.log("PositionsView.clickStatus, i:", i, "e:", e);
+      var positions = this.state.positions;
+      var position = positions[i];
+      this.setState({
+        editStatus: {
+          index: i,
+          status: position.state
+        }
+      });
+    }
+  }, {
+    key: "changeStatus",
+    value: function changeStatus(e) {
+      console.log("PositionsView.changeStatus, e.target.value:", e.target.value);
+      var i = this.state.editStatus.index;
+      this.updatePosition(i, {
+        status: e.target.value
       });
     }
   }, {
@@ -31717,16 +31994,79 @@ function (_React$Component) {
       };
     }()
   }, {
-    key: "getTick",
+    key: "updatePosition",
     value: function () {
-      var _getTick = _asyncToGenerator(
+      var _updatePosition = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee2(args) {
-        var account, exchanger, uri, opts, _ref2, response, json, ticks, _ticks$, date, ask, bid;
+      regeneratorRuntime.mark(function _callee2(i, data) {
+        var account, accountId, positions, position, timestamp, uri, opts, _ref2, response, json;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
+              case 0:
+                account = this.context;
+                accountId = account.accountId;
+                positions = this.state.positions;
+                position = positions[i];
+                timestamp = position.timestamp;
+                uri = new URL("/btctai/".concat(accountId, "/positions/").concat(timestamp), location.origin);
+                console.log("Request update position, uri:", uri);
+                opts = {
+                  method: "POST",
+                  body: JSON.stringify(data),
+                  enableRefreshToken: true
+                };
+                _context2.prev = 8;
+                _context2.next = 11;
+                return (0, _utils.fetchProtectedJSON)(account, uri, opts);
+
+              case 11:
+                _ref2 = _context2.sent;
+                response = _ref2.response;
+                json = _ref2.json;
+                console.log("Positions fetched:", json);
+                this.setState({
+                  positions: (0, _immutabilityHelper.default)(positions, _defineProperty({}, i, {
+                    $set: json
+                  })),
+                  editStatus: {
+                    index: null,
+                    status: null
+                  }
+                });
+                _context2.next = 22;
+                break;
+
+              case 18:
+                _context2.prev = 18;
+                _context2.t0 = _context2["catch"](8);
+                console.error("Failed to update positions:", _context2.t0);
+                return _context2.abrupt("return");
+
+              case 22:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this, [[8, 18]]);
+      }));
+
+      return function updatePosition(_x2, _x3) {
+        return _updatePosition.apply(this, arguments);
+      };
+    }()
+  }, {
+    key: "getTick",
+    value: function () {
+      var _getTick = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee3(args) {
+        var account, exchanger, uri, opts, _ref3, response, json, ticks, _ticks$, date, ask, bid;
+
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 account = this.context;
                 exchanger = args.exchangers[0];
@@ -31736,14 +32076,14 @@ function (_React$Component) {
                 opts = {
                   method: "GET"
                 };
-                _context2.prev = 6;
-                _context2.next = 9;
+                _context3.prev = 6;
+                _context3.next = 9;
                 return (0, _utils.fetchProtectedJSON)(account, uri, opts);
 
               case 9:
-                _ref2 = _context2.sent;
-                response = _ref2.response;
-                json = _ref2.json;
+                _ref3 = _context3.sent;
+                response = _ref3.response;
+                json = _ref3.json;
                 console.log("Ticks fetched:", json);
                 ticks = json.ticks[exchanger];
 
@@ -31758,24 +32098,24 @@ function (_React$Component) {
                   });
                 }
 
-                _context2.next = 21;
+                _context3.next = 21;
                 break;
 
               case 17:
-                _context2.prev = 17;
-                _context2.t0 = _context2["catch"](6);
-                console.error("Failed to get ticks:", _context2.t0);
-                return _context2.abrupt("return");
+                _context3.prev = 17;
+                _context3.t0 = _context3["catch"](6);
+                console.error("Failed to get ticks:", _context3.t0);
+                return _context3.abrupt("return");
 
               case 21:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2, this, [[6, 17]]);
+        }, _callee3, this, [[6, 17]]);
       }));
 
-      return function getTick(_x2) {
+      return function getTick(_x4) {
         return _getTick.apply(this, arguments);
       };
     }()
@@ -31808,9 +32148,26 @@ function (_React$Component) {
           var currentPrice = side == 'LONG' ? bid : ask;
           var variated = currentPrice / (price || -1);
           var profit = side == 'LONG' ? bid - price : price - ask;
+
+          var Status = function Status() {
+            return state.editStatus.index == i ? _react.default.createElement("select", {
+              className: "siimple-select siimple-select--fluid",
+              defaultValue: status,
+              onChange: _this2.changeStatus
+            }, ['open', 'close', 'ignored'].map(function (s, j) {
+              return _react.default.createElement("option", {
+                key: j,
+                value: s
+              }, s);
+            })) : _react.default.createElement("a", {
+              className: "siimple-link",
+              onClick: _this2.clickStatus.bind(_this2, i)
+            }, status);
+          };
+
           return _react.default.createElement(_tables.Tr, {
             key: i
-          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, status), _react.default.createElement(_tables.Td, null, size.toFixed(3)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(price)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(amount)), _react.default.createElement(_tables.Td, null, side), _react.default.createElement(_tables.Td, null, status == 'open' ? (100 * variated).toFixed(4) + '%' : '-'), _react.default.createElement(_tables.Td, null, status == 'open' ? (0, _utils.jpy)(profit * size) : '-'));
+          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, _react.default.createElement(Status, null)), _react.default.createElement(_tables.Td, null, size.toFixed(3)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(price)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(amount)), _react.default.createElement(_tables.Td, null, side), _react.default.createElement(_tables.Td, null, status == 'open' ? (100 * variated).toFixed(4) + '%' : '-'), _react.default.createElement(_tables.Td, null, status == 'open' ? (0, _utils.jpy)(profit * size) : '-'));
         }))), _react.default.createElement("div", {
           className: "siimple-btn siimple-btn--primary siimple-btn--fluid",
           onClick: _this2.clickShowMore

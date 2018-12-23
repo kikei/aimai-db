@@ -1,4 +1,5 @@
 import React from 'react';
+import update from 'immutability-helper';
 import { AccountContext } from '../contexts/contexts'
 import { fetchProtectedJSON, groupBy, jpy } from '../utils'
 import { Table, Tr, Td } from '../components/tables'
@@ -16,14 +17,34 @@ export default class PositionsView extends React.Component {
         datetime: null,
         ask: null,
         bid: null
+      },
+      editStatus: {
+        index: null,
+        status: null
       }
     }
+    this.clickStatus = this.clickStatus.bind(this)
+    this.changeStatus = this.changeStatus.bind(this)
     this.clickShowMore = this.clickShowMore.bind(this)
   }
   componentDidMount() {
     console.log('PositionsView.componentDidMount')
     this.getPositions({count: 30})
     this.getTick({exchangers: ['bitflyer'], limit: 1})
+  }
+  clickStatus(i, e) {
+    console.log("PositionsView.clickStatus, i:", i, "e:", e)
+    const positions = this.state.positions
+    const position = positions[i]
+    this.setState({editStatus: {
+      index: i,
+      status: position.state
+    }})
+  }
+  changeStatus(e) {
+    console.log("PositionsView.changeStatus, e.target.value:", e.target.value)
+    const i = this.state.editStatus.index
+    this.updatePosition(i, {status: e.target.value})
   }
   clickShowMore(e) {
     const positions = this.state.positions
@@ -50,6 +71,32 @@ export default class PositionsView extends React.Component {
       this.setState({positions: this.state.positions.concat(json)})
     } catch (error) {
       console.error("Failed to get positions:", error)
+      return
+    }
+  }
+  async updatePosition(i, data) {
+    const account = this.context
+    const accountId = account.accountId
+    const positions = this.state.positions
+    const position = positions[i]
+    const timestamp = position.timestamp
+    const uri = new URL(`/btctai/${accountId}/positions/${timestamp}`,
+                        location.origin)
+    console.log("Request update position, uri:", uri)
+    const opts = {
+      method: "POST",
+      body: JSON.stringify(data),
+      enableRefreshToken: true
+    }
+    try {
+      const {response, json} = await fetchProtectedJSON(account, uri, opts)
+      console.log("Positions fetched:", json)
+      this.setState({
+        positions: update(positions, {[i]: {$set: json}}),
+        editStatus: {index: null, status: null}
+      })
+    } catch (error) {
+      console.error("Failed to update positions:", error)
       return
     }
   }
@@ -115,10 +162,25 @@ export default class PositionsView extends React.Component {
                         const currentPrice = side == 'LONG' ? bid : ask
                         const variated = currentPrice / (price || -1)
                         const profit = side == 'LONG' ? bid - price : price - ask
+                        const Status = () =>
+                          state.editStatus.index == i ? (
+                            <select
+                              className="siimple-select siimple-select--fluid"
+                              defaultValue={status} onChange={this.changeStatus}>
+                              {['open', 'close', 'ignored'].map((s, j) => 
+                                <option key={j} value={s}>{s}</option>
+                              )}
+                            </select>
+                          ) : (
+                            <a className="siimple-link"
+                               onClick={this.clickStatus.bind(this, i)}>
+                              {status}
+                            </a>
+                          )
                         return (
                           <Tr key={i}>
                             <Td>{date.toLocaleString()}</Td>
-                            <Td>{status}</Td>
+                            <Td><Status/></Td>
                             <Td>{size.toFixed(3)}</Td>
                             <Td>{jpy(price)}</Td>
                             <Td>{jpy(amount)}</Td>
