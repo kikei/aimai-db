@@ -31892,14 +31892,20 @@ function (_React$Component) {
   _createClass(PositionsView, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      var _this2 = this;
+
       console.log('PositionsView.componentDidMount');
       this.getPositions({
         count: 30
-      });
-      this.getTick({
-        exchangers: ['bitflyer'],
-        limit: 1
-      });
+      }); // First api call may cause refreshing token,
+      // so it will be better to delay following api calls to use new token.
+
+      setTimeout(function () {
+        return _this2.getTick({
+          exchangers: ['bitflyer'],
+          limit: 1
+        });
+      }, 500);
     }
   }, {
     key: "clickStatus",
@@ -32122,7 +32128,7 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       var state = this.state;
       return _react.default.createElement(_contexts.AccountContext.Consumer, null, function (account) {
@@ -32131,7 +32137,7 @@ function (_React$Component) {
           className: "siimple-content"
         }, _react.default.createElement("h2", null, "Positions"), _react.default.createElement(_tables.Table, null, _react.default.createElement("div", {
           className: "siimple-table-header"
-        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Date"), _react.default.createElement(_tables.Td, null, "Status"), _react.default.createElement(_tables.Td, null, "Size"), _react.default.createElement(_tables.Td, null, "Price"), _react.default.createElement(_tables.Td, null, "Amount"), _react.default.createElement(_tables.Td, null, "Side"), _react.default.createElement(_tables.Td, null, "Variate"), _react.default.createElement(_tables.Td, null, "Profit"))), _react.default.createElement("div", {
+        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Date"), _react.default.createElement(_tables.Td, null, "Status"), _react.default.createElement(_tables.Td, null, "Size"), _react.default.createElement(_tables.Td, null, "Price"), _react.default.createElement(_tables.Td, null, "Side"), _react.default.createElement(_tables.Td, null, "Variate"), _react.default.createElement(_tables.Td, null, "Profit"))), _react.default.createElement("div", {
           className: "siimple-table-body"
         }, state.positions.map(function (v, i) {
           var date = new Date(v.timestamp * 1000);
@@ -32153,7 +32159,7 @@ function (_React$Component) {
             return state.editStatus.index == i ? _react.default.createElement("select", {
               className: "siimple-select siimple-select--fluid",
               defaultValue: status,
-              onChange: _this2.changeStatus
+              onChange: _this3.changeStatus
             }, ['open', 'close', 'ignored'].map(function (s, j) {
               return _react.default.createElement("option", {
                 key: j,
@@ -32161,16 +32167,16 @@ function (_React$Component) {
               }, s);
             })) : _react.default.createElement("a", {
               className: "siimple-link",
-              onClick: _this2.clickStatus.bind(_this2, i)
+              onClick: _this3.clickStatus.bind(_this3, i)
             }, status);
           };
 
           return _react.default.createElement(_tables.Tr, {
             key: i
-          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, _react.default.createElement(Status, null)), _react.default.createElement(_tables.Td, null, size.toFixed(3)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(price)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(amount)), _react.default.createElement(_tables.Td, null, side), _react.default.createElement(_tables.Td, null, status == 'open' ? (100 * variated).toFixed(4) + '%' : '-'), _react.default.createElement(_tables.Td, null, status == 'open' ? (0, _utils.jpy)(profit * size) : '-'));
+          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, _react.default.createElement(Status, null)), _react.default.createElement(_tables.Td, null, size.toFixed(3)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(price)), _react.default.createElement(_tables.Td, null, side), _react.default.createElement(_tables.Td, null, status == 'open' ? (100 * variated).toFixed(4) + '%' : '-'), _react.default.createElement(_tables.Td, null, status == 'open' ? (0, _utils.jpy)(profit * size) : '-'));
         }))), _react.default.createElement("div", {
           className: "siimple-btn siimple-btn--primary siimple-btn--fluid",
-          onClick: _this2.clickShowMore
+          onClick: _this3.clickShowMore
         }, "Show more"));
       });
     }

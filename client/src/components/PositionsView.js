@@ -30,7 +30,10 @@ export default class PositionsView extends React.Component {
   componentDidMount() {
     console.log('PositionsView.componentDidMount')
     this.getPositions({count: 30})
-    this.getTick({exchangers: ['bitflyer'], limit: 1})
+    // First api call may cause refreshing token,
+    // so it will be better to delay following api calls to use new token.
+    setTimeout(() => this.getTick({exchangers: ['bitflyer'], limit: 1}),
+               500)
   }
   clickStatus(i, e) {
     console.log("PositionsView.clickStatus, i:", i, "e:", e)
