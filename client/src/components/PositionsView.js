@@ -141,7 +141,6 @@ export default class PositionsView extends React.Component {
                       <Td>Status</Td>
                       <Td>Size</Td>
                       <Td>Price</Td>
-                      <Td>Amount</Td>
                       <Td>Side</Td>
                       <Td>Variate</Td>
                       <Td>Profit</Td>
@@ -183,7 +182,6 @@ export default class PositionsView extends React.Component {
                             <Td><Status/></Td>
                             <Td>{size.toFixed(3)}</Td>
                             <Td>{jpy(price)}</Td>
-                            <Td>{jpy(amount)}</Td>
                             <Td>{side}</Td>
                             <Td>
                               {status == 'open' ?
