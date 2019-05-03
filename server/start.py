@@ -406,9 +406,10 @@ def getOptions(args):
     }
     try:
         opts, args = getopt.getopt(args,
-                                   'hCp:',
+                                   'hC:P:p:',
                                    ['help',
                                     'create',
+                                    'password=',
                                     'port='])
     except getopt.GetoptError:
         return options
@@ -418,6 +419,8 @@ def getOptions(args):
         elif opt in ('-C', '--create'):
            options['mode'] = 'add_user'
            options['username'] = arg
+        elif opt in ('-P', '--password'):
+           options['password'] = arg
         elif opt in ('-p', '--port'):
            options['port'] = arg
     return options
@@ -430,9 +433,8 @@ def runMain(port=None):
   app.debug = True # デバッグモード有効化
   app.run(host='0.0.0.0', port=port)
 
-def runAddUser(username):
+def runAddUser(username, password=None):
   import getpass
-  password = None
   while password is None or password == '':
     password = getpass.getpass('Login password: ')
   account = Account.create(username, password)
@@ -454,7 +456,7 @@ if __name__ == '__main__':
     if options['mode'] == 'main':
         runMain(port=options['port'])
     elif options['mode'] == 'add_user':
-        runAddUser(options['username'])
+        runAddUser(options['username'], options['password'])
     else:
         print_help()
     
