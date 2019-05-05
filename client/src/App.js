@@ -110,16 +110,16 @@ class App extends Component {
       console.log("authenticated, state:", this.state,
                   "location:", location.pathname)
       if (location.pathname === '/login')
-        this.context.router.history.push("/")
+        location.href = '/'
       else
         location.reload()
     } catch (error) {
       console.error("Failed to login:", error)
     }
   }
-  logout() {
+  logout(history) {
     localStorage.removeItem("access_token")
-    this.context.router.history.push("/login")
+    history.push("/login")
     console.log("logged out", localStorage.getItem("access_token"))
     location.reload()
   }
