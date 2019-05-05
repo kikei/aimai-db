@@ -470,9 +470,13 @@ def runAddUser(username, password=None):
   import getpass
   while password is None or password == '':
     password = getpass.getpass('Login password: ')
-  account = Account.create(username, password)
-  modelAccounts.save(account)
-  print('Succefully created, user={user}.'.format(user=username))
+  account = modelAccounts.oneByUsername(username)
+  if account is not None:
+    print('User already exists, user={user}.'.format(user=username))
+  else:
+    account = Account.create(username, password)
+    modelAccounts.save(account)
+    print('Succefully created, user={user}.'.format(user=username))
 
 def print_help():
     msg = """Usage: {script} [Options]...
