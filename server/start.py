@@ -17,7 +17,7 @@ DIR_LIBS = os.path.join(CWD, '..', '..', 'libs')
 sys.path.append(os.path.join(DIR_LIBS, 'btcbot1', 'apps', 'trade', 'src'))
 
 from main import getDBInstance, getModels
-from classes import Confidence, Position, strToDatetime
+from classes import Confidence, TrendStrength, Position, strToDatetime
 
 dbi = getDBInstance()
 dashbModels = DashboardModels(dbi)
@@ -26,6 +26,7 @@ btctaiModels = getModels(dbi)
 modelAccounts = dashbModels.Accounts
 modelValues = btctaiModels.Values
 modelConfidences = btctaiModels.Confidences
+modelTrendStrengths = btctaiModels.TrendStrengths
 modelTrades = btctaiModels.Trades
 modelPositions = btctaiModels.Positions
 modelTicks = btctaiModels.Ticks
@@ -218,6 +219,38 @@ def putBtctaiConfidences(accountId):
   conf = modelConfidences.save(conf, accountId=accountId)
   conf = conf.toDict()
   return flask.jsonify(conf)
+
+@app.route('/btctai/<string:accountId>/trendStrength', methods=['GET'])
+@flask_jwt.jwt_required
+def getBtctaiTrendStrength(accountId):
+  identity = flask_jwt.get_jwt_identity()
+  if accountId != identity:
+    flask.abort(403)
+  count = flask.request.args.get('count', None)
+  before = flask.request.args.get('before', None)
+  try:
+    if count is not None:
+      count = int(count)
+    if before is not None:
+      before = float(before)
+  except ValueError as e:
+    flask.abort(400)
+  values = modelTrendStrengths.all(accountId=accountId,
+                                  before=before, count=count)
+  values = [v.toDict() for v in values]
+  return flask.jsonify(values)
+
+@app.route('/btctai/<string:accountId>/trendStrength', methods=['PUT'])
+@flask_jwt.jwt_required
+def putBtctaiTrendStrength(accountId):
+  identity = flask_jwt.get_jwt_identity()
+  if accountId != identity:
+    flask.abort(403)
+  obj = flask.request.get_json()
+  values = TrendStrength.fromDict(obj)
+  values = modelTrendStrengths.save(values, accountId=accountId)
+  values = values.toDict()
+  return flask.jsonify(values)
 
 # @app.route('/api/assets', methods=['GET'])
 # @jwt_required()

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
-import { Switch, Route, Link, Redirect } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Link, Redirect } from 'react-router-dom';
 import HomeView from './components/HomeView';
 import LoginView from './components/LoginView';
 import ValuesView from './components/ValuesView';
 import TradesView from './components/TradesView';
 import PositionsView from './components/PositionsView.js';
 import ConfidencesView from './components/ConfidencesView';
+import TrendView from './components/TrendView';
 import { AccountContext } from './contexts/contexts';
 import { fetchJSON, fetchProtectedJSON } from './utils'
 
@@ -133,51 +134,65 @@ class App extends Component {
   }
   render() {
     const state = this.state
-    const Header = (
+    const Header = (props) => (
       <div className="siimple-jumbtron simmple-jumbotron--large">
         <div className="siimple-jumbotron-title">aimai dashboard</div>
       </div>
     )
-    const Navigation = (
+    const Navigation = (props) => (
       <nav className="siimple-navvar">
         <div className="siimple--float-right">
-          <Link to="/" className="siimple-navbar-item">Home</Link>
-          <Link to="/values" className="siimple-navbar-item">Values</Link>
-          <Link to="/trades" className="siimple-navbar-item">Trades</Link>
-          <Link to="/confidences" className="siimple-navbar-item">Confidences</Link>
-          <Link to="/positions" className="siimple-navbar-item">Positions</Link>
+          <label className="siimple-label">Menu: </label>
+          <select className="siimple-select"
+                  onChange={e => {props.history.push(e.target.value)}}>
+            <option value="/">Home</option>
+            <option value="/values">Values</option>
+            <option value="/trades">Trades</option>
+            <option value="/confidences">Confidences</option>
+            <option value="/trends">Trends</option>
+            <option value="/positions">Positions</option>
+          </select>
+          <div className="siimple-btn" onClick={(e) => location.reload()}>
+            Reload
+          </div>
           {this.isLoggedIn() ? (
-            <a className="siimple-navbar-item" onClick={this.logout}>
-            Logout
-          </a>
+            <div className="siimple-btn"
+                 onClick={e => this.logout(props.history)}>
+              Logout
+            </div>
           ) : (
-              <Link to="/login" className="siimple-navbar-item">Login</Link>
+            <Link to="/login" className="siimple-navbar-item">Login</Link>
           )}
         </div>
       </nav>
     )
-    const Body = (
-      <AccountContext.Provider value={state.account}>
-        <Switch>
-          <Route exact path="/" component={Home}/>
-          <Route path="/login" component={LoginView}/>
-          <Route path="/values" render={this.requireLogin(<ValuesView/>)}/> 
-          <Route path="/trades" render={this.requireLogin(<TradesView/>)}/> 
-          <Route path="/Confidences" render={this.requireLogin(<ConfidencesView/>)}/>
-          <Route path="/Positions" render={this.requireLogin(<PositionsView/>)}/>
-        </Switch>
-      </AccountContext.Provider>
+    const Home = (props) => (<div>Home</div>)
+    const Main = (props) => (
+      <BrowserRouter>
+        <Route component={Header}/>
+        <Route component={Navigation}/>
+        <AccountContext.Provider value={state.account}>
+          <Switch>
+            <Route exact path="/" component={Home}/>
+            <Route path="/login" component={LoginView}/>
+            <Route path="/values" render={this.requireLogin(<ValuesView/>)}/>
+            <Route path="/trades" render={this.requireLogin(<TradesView/>)}/>
+            <Route path="/confidences"
+                   render={this.requireLogin(<ConfidencesView/>)}/>
+            <Route path="/trends" render={this.requireLogin(<TrendView/>)}/>
+            <Route path="/positions"
+                   render={this.requireLogin(<PositionsView/>)}/>
+          </Switch>
+        </AccountContext.Provider>
+      </BrowserRouter>
     )
-    const Home = () => (<div>Home</div>)
     return (
       <div>
         <div className="siimple-grid">
           <div className="siimple-grid-row">
             <div className="siimple-grid-col siimple-grid-col--2 siimple-grid-col--md-1 siimple-grid-col--sm-12"></div>
             <div className="siimple-grid-col siimple-grid-col--8 siimple-grid-col--md-10 siimple-grid-col--sm-12">
-              {Header}
-              {Navigation}
-              {Body}
+              <Main/>
             </div>
             <div className="siimple-grid-col siimple-grid-col--2 siimple-grid-col--md-1 siimple-grid-col--sm-12"></div>
           </div>
