@@ -47,6 +47,7 @@ export default class LoginView extends React.Component {
                            placeholder="Your name"
                            className="siimple-input"
                            value={state.inputUsername||""}
+                           autoComplete="current-password"
                            onChange={this.changeInputUsername}/>
                   </div>
                   <div className="siimple-form-field">
@@ -57,6 +58,7 @@ export default class LoginView extends React.Component {
                     <input name="password" type="password" size="20"
                            className="siimple-input"
                            value={state.inputPassword||""}
+                           autoComplete="current-password"
                            onChange={this.changeInputPassword}/>
                   </div>
                   <div className="siimple-form-field">
