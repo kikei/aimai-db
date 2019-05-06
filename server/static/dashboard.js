@@ -35188,11 +35188,11 @@ function (_Component) {
           path: "/trades",
           render: _this3.requireLogin(_react.default.createElement(_TradesView.default, null))
         }), _react.default.createElement(_reactRouterDom.Route, {
-          path: "/trends",
-          render: _this3.requireLogin(_react.default.createElement(_TrendView.default, null))
-        }), _react.default.createElement(_reactRouterDom.Route, {
           path: "/confidences",
           render: _this3.requireLogin(_react.default.createElement(_ConfidencesView.default, null))
+        }), _react.default.createElement(_reactRouterDom.Route, {
+          path: "/trends",
+          render: _this3.requireLogin(_react.default.createElement(_TrendView.default, null))
         }), _react.default.createElement(_reactRouterDom.Route, {
           path: "/positions",
           render: _this3.requireLogin(_react.default.createElement(_PositionsView.default, null))
@@ -36692,13 +36692,13 @@ function (_React$Component) {
           className: "siimple-content"
         }, _react.default.createElement("h2", null, "Trend"), _react.default.createElement(_tables.Table, null, _react.default.createElement("div", {
           className: "siimple-table-header"
-        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Date"), _react.default.createElement(_tables.Td, null, "Strength"))), _react.default.createElement("div", {
+        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Date"), _react.default.createElement(_tables.Td, null, "Strength"), _react.default.createElement(_tables.Td, null, "Trend"))), _react.default.createElement("div", {
           className: "siimple-table-body"
         }, state.strength.map(function (c, i) {
           var date = new Date(c.timestamp * 1000);
           return _react.default.createElement(_tables.Tr, {
             key: i
-          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, c.strength.toFixed(3), " %"));
+          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, c.strength.toFixed(3)), _react.default.createElement(_tables.Td, null, c.strength > 0.6 ? 'Up' : c.strength >= 0.4 ? 'Flat' : 'Down'));
         }))), _react.default.createElement("div", {
           className: "siimple-btn siimple-btn--primary siimple-btn--fluid",
           onClick: _this2.clickShowMore
