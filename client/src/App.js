@@ -4,6 +4,7 @@ import { BrowserRouter, Switch, Route, Link, Redirect } from 'react-router-dom';
 import HomeView from './components/HomeView';
 import LoginView from './components/LoginView';
 import ValuesView from './components/ValuesView';
+import TicksView from './components/TicksView';
 import TradesView from './components/TradesView';
 import PositionsView from './components/PositionsView.js';
 import ConfidencesView from './components/ConfidencesView';
@@ -147,6 +148,7 @@ class App extends Component {
                   onChange={e => {props.history.push(e.target.value)}}>
             <option value="/">Home</option>
             <option value="/values">Values</option>
+            <option value="/exchangers">Exchangers</option>
             <option value="/trades">Trades</option>
             <option value="/confidences">Confidences</option>
             <option value="/trends">Trends</option>
@@ -176,6 +178,7 @@ class App extends Component {
             <Route exact path="/" component={Home}/>
             <Route path="/login" component={LoginView}/>
             <Route path="/values" render={this.requireLogin(<ValuesView/>)}/>
+            <Route path="/exchangers" render={this.requireLogin(<TicksView/>)}/>
             <Route path="/trades" render={this.requireLogin(<TradesView/>)}/>
             <Route path="/confidences"
                    render={this.requireLogin(<ConfidencesView/>)}/>
