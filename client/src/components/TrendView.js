@@ -59,6 +59,7 @@ export default class TrendView extends React.Component {
                     <Tr>
                       <Td>Date</Td>
                       <Td>Strength</Td>
+                      <Td>Trend</Td>
                     </Tr>
                   </div>
                   <div className="siimple-table-body">
@@ -68,7 +69,9 @@ export default class TrendView extends React.Component {
                         return (
                           <Tr key={i}>
                             <Td>{date.toLocaleString()}</Td>
-                            <Td>{c.strength.toFixed(3)} %</Td>
+                            <Td>{c.strength.toFixed(3)}</Td>
+                            <Td>{c.strength > 0.6 ? 'Up' :
+                                 c.strength >= 0.4 ? 'Flat' : 'Down'}</Td>
                           </Tr>
                         )
                       })
