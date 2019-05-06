@@ -34845,6 +34845,8 @@ var _LoginView = _interopRequireDefault(require("./components/LoginView"));
 
 var _ValuesView = _interopRequireDefault(require("./components/ValuesView"));
 
+var _TicksView = _interopRequireDefault(require("./components/TicksView"));
+
 var _TradesView = _interopRequireDefault(require("./components/TradesView"));
 
 var _PositionsView = _interopRequireDefault(require("./components/PositionsView.js"));
@@ -35133,7 +35135,9 @@ function (_Component) {
         }, "Home"), _react.default.createElement("option", {
           value: "/values"
         }, "Values"), _react.default.createElement("option", {
-          value: "/trandes"
+          value: "/exchangers"
+        }, "Exchangers"), _react.default.createElement("option", {
+          value: "/trades"
         }, "Trades"), _react.default.createElement("option", {
           value: "/confidences"
         }, "Confidences"), _react.default.createElement("option", {
@@ -35178,14 +35182,17 @@ function (_Component) {
           path: "/values",
           render: _this3.requireLogin(_react.default.createElement(_ValuesView.default, null))
         }), _react.default.createElement(_reactRouterDom.Route, {
+          path: "/exchangers",
+          render: _this3.requireLogin(_react.default.createElement(_TicksView.default, null))
+        }), _react.default.createElement(_reactRouterDom.Route, {
           path: "/trades",
           render: _this3.requireLogin(_react.default.createElement(_TradesView.default, null))
         }), _react.default.createElement(_reactRouterDom.Route, {
-          path: "/confidences",
-          render: _this3.requireLogin(_react.default.createElement(_ConfidencesView.default, null))
-        }), _react.default.createElement(_reactRouterDom.Route, {
           path: "/trends",
           render: _this3.requireLogin(_react.default.createElement(_TrendView.default, null))
+        }), _react.default.createElement(_reactRouterDom.Route, {
+          path: "/confidences",
+          render: _this3.requireLogin(_react.default.createElement(_ConfidencesView.default, null))
         }), _react.default.createElement(_reactRouterDom.Route, {
           path: "/positions",
           render: _this3.requireLogin(_react.default.createElement(_PositionsView.default, null))
@@ -35216,7 +35223,7 @@ _defineProperty(App, "contextTypes", {
 var _default = App;
 exports.default = _default;
 
-},{"./components/ConfidencesView":171,"./components/HomeView":172,"./components/LoginView":173,"./components/PositionsView.js":174,"./components/TradesView":175,"./components/TrendView":176,"./components/ValuesView":177,"./contexts/contexts":179,"./utils":181,"core-js/modules/es.array.iterator":106,"core-js/modules/es.object.assign":109,"core-js/modules/es.object.get-own-property-descriptor":110,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.string.split":117,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"prop-types":142,"react":158,"react-router-dom":152,"regenerator-runtime/runtime":159}],171:[function(require,module,exports){
+},{"./components/ConfidencesView":171,"./components/HomeView":172,"./components/LoginView":173,"./components/PositionsView.js":174,"./components/TicksView":175,"./components/TradesView":176,"./components/TrendView":177,"./components/ValuesView":178,"./contexts/contexts":180,"./utils":182,"core-js/modules/es.array.iterator":106,"core-js/modules/es.object.assign":109,"core-js/modules/es.object.get-own-property-descriptor":110,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.string.split":117,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"prop-types":142,"react":158,"react-router-dom":152,"regenerator-runtime/runtime":159}],171:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es.symbol");
@@ -35416,7 +35423,7 @@ function (_React$Component) {
 exports.default = ConfidencesView;
 ConfidencesView.contextType = _contexts.AccountContext;
 
-},{"../components/tables":178,"../contexts/contexts":179,"../utils":181,"core-js/modules/es.array.concat":105,"core-js/modules/es.array.iterator":106,"core-js/modules/es.array.map":107,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.string.search":116,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"core-js/modules/web.url":123,"react":158,"regenerator-runtime/runtime":159}],172:[function(require,module,exports){
+},{"../components/tables":179,"../contexts/contexts":180,"../utils":182,"core-js/modules/es.array.concat":105,"core-js/modules/es.array.iterator":106,"core-js/modules/es.array.map":107,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.string.search":116,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"core-js/modules/web.url":123,"react":158,"regenerator-runtime/runtime":159}],172:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es.symbol");
@@ -35499,7 +35506,7 @@ function (_React$Component) {
 
 exports.default = HomeView;
 
-},{"../contexts/contexts":179,"core-js/modules/es.array.iterator":106,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.string.iterator":115,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"react":158}],173:[function(require,module,exports){
+},{"../contexts/contexts":180,"core-js/modules/es.array.iterator":106,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.string.iterator":115,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"react":158}],173:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es.symbol");
@@ -35653,7 +35660,7 @@ function (_React$Component) {
 exports.default = LoginView;
 LoginView.contextType = _contexts.AccountContext;
 
-},{"../contexts/contexts":179,"core-js/modules/es.array.iterator":106,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.string.iterator":115,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"react":158}],174:[function(require,module,exports){
+},{"../contexts/contexts":180,"core-js/modules/es.array.iterator":106,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.string.iterator":115,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"react":158}],174:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es.symbol");
@@ -36075,7 +36082,181 @@ function (_React$Component) {
 exports.default = PositionsView;
 PositionsView.contextType = _contexts.AccountContext;
 
-},{"../components/tables":178,"../contexts/contexts":179,"../utils":181,"core-js/modules/es.array.concat":105,"core-js/modules/es.array.iterator":106,"core-js/modules/es.array.map":107,"core-js/modules/es.number.to-fixed":108,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.string.search":116,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"core-js/modules/web.url":123,"immutability-helper":133,"react":158,"regenerator-runtime/runtime":159}],175:[function(require,module,exports){
+},{"../components/tables":179,"../contexts/contexts":180,"../utils":182,"core-js/modules/es.array.concat":105,"core-js/modules/es.array.iterator":106,"core-js/modules/es.array.map":107,"core-js/modules/es.number.to-fixed":108,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.string.search":116,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"core-js/modules/web.url":123,"immutability-helper":133,"react":158,"regenerator-runtime/runtime":159}],175:[function(require,module,exports){
+"use strict";
+
+require("core-js/modules/es.symbol");
+
+require("core-js/modules/es.symbol.description");
+
+require("core-js/modules/es.symbol.iterator");
+
+require("core-js/modules/es.array.iterator");
+
+require("core-js/modules/es.array.map");
+
+require("core-js/modules/es.object.get-prototype-of");
+
+require("core-js/modules/es.object.keys");
+
+require("core-js/modules/es.object.to-string");
+
+require("core-js/modules/es.promise");
+
+require("core-js/modules/es.string.iterator");
+
+require("core-js/modules/web.dom-collections.iterator");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+require("regenerator-runtime/runtime");
+
+var _react = _interopRequireDefault(require("react"));
+
+var _contexts = require("../contexts/contexts");
+
+var _utils = require("../utils");
+
+var _tables = require("../components/tables");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var TicksView =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(TicksView, _React$Component);
+
+  function TicksView(props) {
+    var _this;
+
+    _classCallCheck(this, TicksView);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(TicksView).call(this, props));
+    _this.state = {
+      ticks: {}
+    };
+    _this.getTicks = _this.getTicks.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(TicksView, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      console.log('ValuesView.componentDidMount');
+      this.getTicks();
+    }
+  }, {
+    key: "getTicks",
+    value: function () {
+      var _getTicks = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee() {
+        var account, accountId, uri, opts, _ref, response, json;
+
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                account = this.context;
+                accountId = account.accountId;
+                uri = "/ticks?limit=1";
+                console.log("Request ticks, uri:", uri);
+                opts = {
+                  method: "GET",
+                  enableRefreshToken: true
+                };
+                _context.prev = 5;
+                _context.next = 8;
+                return (0, _utils.fetchProtectedJSON)(account, uri, opts);
+
+              case 8:
+                _ref = _context.sent;
+                response = _ref.response;
+                json = _ref.json;
+                console.log("Ticks fetched:", json);
+                this.setState({
+                  ticks: json.ticks
+                });
+                _context.next = 18;
+                break;
+
+              case 15:
+                _context.prev = 15;
+                _context.t0 = _context["catch"](5);
+                console.error("Failed to get ticks:", _context.t0);
+
+              case 18:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this, [[5, 15]]);
+      }));
+
+      function getTicks() {
+        return _getTicks.apply(this, arguments);
+      }
+
+      return getTicks;
+    }()
+  }, {
+    key: "render",
+    value: function render() {
+      var state = this.state;
+      return _react.default.createElement(_contexts.AccountContext.Consumer, null, function (account) {
+        console.log("TicksView.render, account:", account, "state:", state);
+        return _react.default.createElement("div", {
+          className: "siimple-content"
+        }, _react.default.createElement("h2", null, "Ticks"), _react.default.createElement(_tables.Table, null, _react.default.createElement("div", {
+          className: "siimple-table-header"
+        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Exchanger"), _react.default.createElement(_tables.Td, null, "ASK"), _react.default.createElement(_tables.Td, null, "BID"), _react.default.createElement(_tables.Td, null, "Date"))), _react.default.createElement("div", {
+          className: "siimple-table-body"
+        }, Object.keys(state.ticks).map(function (exchanger, i) {
+          var _state$ticks$exchange = state.ticks[exchanger][0],
+              datetime = _state$ticks$exchange.datetime,
+              ask = _state$ticks$exchange.ask,
+              bid = _state$ticks$exchange.bid;
+          var date = new Date(datetime * 1000);
+          return _react.default.createElement(_tables.Tr, {
+            key: i
+          }, _react.default.createElement(_tables.Td, null, exchanger), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(ask)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(bid)), _react.default.createElement(_tables.Td, null, date.toLocaleString()));
+        }))));
+      });
+    }
+  }]);
+
+  return TicksView;
+}(_react.default.Component);
+
+exports.default = TicksView;
+TicksView.contextType = _contexts.AccountContext;
+
+},{"../components/tables":179,"../contexts/contexts":180,"../utils":182,"core-js/modules/es.array.iterator":106,"core-js/modules/es.array.map":107,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.keys":112,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"react":158,"regenerator-runtime/runtime":159}],176:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es.symbol");
@@ -36331,7 +36512,7 @@ function (_React$Component) {
 exports.default = TradesView;
 TradesView.contextType = _contexts.AccountContext;
 
-},{"../components/tables":178,"../contexts/contexts":179,"../utils":181,"core-js/modules/es.array.concat":105,"core-js/modules/es.array.iterator":106,"core-js/modules/es.array.map":107,"core-js/modules/es.number.to-fixed":108,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.string.search":116,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"core-js/modules/web.url":123,"react":158,"regenerator-runtime/runtime":159}],176:[function(require,module,exports){
+},{"../components/tables":179,"../contexts/contexts":180,"../utils":182,"core-js/modules/es.array.concat":105,"core-js/modules/es.array.iterator":106,"core-js/modules/es.array.map":107,"core-js/modules/es.number.to-fixed":108,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.string.search":116,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"core-js/modules/web.url":123,"react":158,"regenerator-runtime/runtime":159}],177:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es.symbol");
@@ -36532,7 +36713,7 @@ function (_React$Component) {
 exports.default = TrendView;
 TrendView.contextType = _contexts.AccountContext;
 
-},{"../components/tables":178,"../contexts/contexts":179,"../utils":181,"core-js/modules/es.array.concat":105,"core-js/modules/es.array.iterator":106,"core-js/modules/es.array.map":107,"core-js/modules/es.number.to-fixed":108,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.string.search":116,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"core-js/modules/web.url":123,"react":158,"regenerator-runtime/runtime":159}],177:[function(require,module,exports){
+},{"../components/tables":179,"../contexts/contexts":180,"../utils":182,"core-js/modules/es.array.concat":105,"core-js/modules/es.array.iterator":106,"core-js/modules/es.array.map":107,"core-js/modules/es.number.to-fixed":108,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.string.search":116,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"core-js/modules/web.url":123,"react":158,"regenerator-runtime/runtime":159}],178:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es.symbol");
@@ -36908,7 +37089,7 @@ function (_React$Component2) {
 exports.default = ValuesView;
 ValuesView.contextType = _contexts.AccountContext;
 
-},{"../components/tables":178,"../contexts/contexts":179,"../utils":181,"core-js/modules/es.array.concat":105,"core-js/modules/es.array.iterator":106,"core-js/modules/es.array.map":107,"core-js/modules/es.object.assign":109,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.keys":112,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"react":158,"regenerator-runtime/runtime":159}],178:[function(require,module,exports){
+},{"../components/tables":179,"../contexts/contexts":180,"../utils":182,"core-js/modules/es.array.concat":105,"core-js/modules/es.array.iterator":106,"core-js/modules/es.array.map":107,"core-js/modules/es.object.assign":109,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.keys":112,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"core-js/modules/es.string.iterator":115,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"react":158,"regenerator-runtime/runtime":159}],179:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es.symbol");
@@ -37029,7 +37210,7 @@ function (_React$Component3) {
 
 exports.Td = Td;
 
-},{"core-js/modules/es.array.iterator":106,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.string.iterator":115,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"react":158}],179:[function(require,module,exports){
+},{"core-js/modules/es.array.iterator":106,"core-js/modules/es.object.get-prototype-of":111,"core-js/modules/es.object.to-string":113,"core-js/modules/es.string.iterator":115,"core-js/modules/es.symbol":120,"core-js/modules/es.symbol.description":118,"core-js/modules/es.symbol.iterator":119,"core-js/modules/web.dom-collections.iterator":121,"react":158}],180:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37045,7 +37226,7 @@ var AccountContext = _react.default.createContext();
 
 exports.AccountContext = AccountContext;
 
-},{"react":158}],180:[function(require,module,exports){
+},{"react":158}],181:[function(require,module,exports){
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -37060,7 +37241,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom.default.render(_react.default.createElement(_reactRouterDom.BrowserRouter, null, _react.default.createElement(_App.default, null)), document.getElementById('root'));
 
-},{"./App":170,"react":158,"react-dom":146,"react-router-dom":152}],181:[function(require,module,exports){
+},{"./App":170,"react":158,"react-dom":146,"react-router-dom":152}],182:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es.object.assign");
@@ -37238,4 +37419,4 @@ function _fetchProtectedJSON() {
   return _fetchProtectedJSON.apply(this, arguments);
 }
 
-},{"core-js/modules/es.object.assign":109,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"regenerator-runtime/runtime":159}]},{},[180]);
+},{"core-js/modules/es.object.assign":109,"core-js/modules/es.object.to-string":113,"core-js/modules/es.promise":114,"regenerator-runtime/runtime":159}]},{},[181]);
