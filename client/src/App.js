@@ -162,14 +162,13 @@ class App extends Component {
               )
             }
           </select>
-          <div className="siimple-btn" onClick={(e) => location.reload()}>
+          <a className="siimple-btn" onClick={(e) => location.reload()}>
             Reload
-          </div>
+          </a>
           {this.isLoggedIn() ? (
-            <div className="siimple-btn"
-                 onClick={e => this.logout(props.history)}>
+            <a className="siimple-btn" onClick={e => this.logout(props.history)}>
               Logout
-            </div>
+            </a>
           ) : (
             <Link to="/login" className="siimple-navbar-item">Login</Link>
           )}
