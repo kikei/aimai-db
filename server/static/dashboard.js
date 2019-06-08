@@ -36280,9 +36280,12 @@ function (_React$Component) {
           className: "siimple-table-body"
         }, Object.keys(state.ticks).map(function (exchanger, i) {
           var _state$ticks$exchange = state.ticks[exchanger][0],
-              datetime = _state$ticks$exchange.datetime,
-              ask = _state$ticks$exchange.ask,
-              bid = _state$ticks$exchange.bid;
+              _state$ticks$exchange2 = _state$ticks$exchange.datetime,
+              datetime = _state$ticks$exchange2 === void 0 ? 0 : _state$ticks$exchange2,
+              _state$ticks$exchange3 = _state$ticks$exchange.ask,
+              ask = _state$ticks$exchange3 === void 0 ? 0 : _state$ticks$exchange3,
+              _state$ticks$exchange4 = _state$ticks$exchange.bid,
+              bid = _state$ticks$exchange4 === void 0 ? 0 : _state$ticks$exchange4;
           var date = new Date(datetime * 1000);
           return _react.default.createElement(_tables.Tr, {
             key: i
@@ -36534,7 +36537,7 @@ function (_React$Component) {
           var date = new Date(v.timestamp * 1000);
           return _react.default.createElement(_tables.Tr, {
             key: i
-          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, v.side), _react.default.createElement(_tables.Td, null, v.size.toFixed(3)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.price)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.amount)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.total_amount), " (", v.total_size.toFixed(1), ")"));
+          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, v.side), _react.default.createElement(_tables.Td, null, v.size.toFixed(3)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.price)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.amount)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.total_amount), " (", v.total_size.toFixed(2), ")"));
         })));
       };
 
