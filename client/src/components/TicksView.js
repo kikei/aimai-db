@@ -54,7 +54,8 @@ export default class TicksView extends React.Component {
                   <div className="siimple-table-body">
                     {
                       Object.keys(state.ticks).map((exchanger, i) => {
-                        const {datetime, ask, bid} = state.ticks[exchanger][0]
+                        const {datetime=0, ask=0, bid=0} =
+                              state.ticks[exchanger][0]
                         const date = new Date(datetime * 1000)
                         return (
                           <Tr key={i}>
