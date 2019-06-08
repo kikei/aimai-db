@@ -100,7 +100,7 @@ export default class TradesView extends React.Component {
                   <Td>{v.size.toFixed(3)}</Td>
                   <Td>{jpy(v.price)}</Td>
                   <Td>{jpy(v.amount)}</Td>
-                  <Td>{jpy(v.total_amount)} ({v.total_size.toFixed(1)})</Td>
+                  <Td>{jpy(v.total_amount)} ({v.total_size.toFixed(2)})</Td>
                 </Tr>
               )
             })
