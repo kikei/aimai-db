@@ -59,8 +59,8 @@ export default class TicksView extends React.Component {
                         return (
                           <Tr key={i}>
                             <Td>{exchanger}</Td>
-                            <Td>{jpy(ask)}</Td>
-                            <Td>{jpy(bid)}</Td>
+                            <Td>{ask.toPrecision(6)}</Td>
+                            <Td>{bid.toPrecision(6)}</Td>
                             <Td>{date.toLocaleString()}</Td>
                           </Tr>
                         )

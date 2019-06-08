@@ -140,28 +140,35 @@ class App extends Component {
         <div className="siimple-jumbotron-title">aimai dashboard</div>
       </div>
     )
+    const pages = [
+      { path: '/', name: 'Home' },
+      { path: '/values', name: 'Values' },
+      { path: '/exchangers', name: 'Exchangers' },
+      { path: '/trades', name: 'Trades' },
+      { path: '/confidences', name: 'Confidences' },
+      { path: '/trends', name: 'Trends' },
+      { path: '/positions', name: 'Positions' }
+    ]
     const Navigation = (props) => (
       <nav className="siimple-navvar">
         <div className="siimple--float-right">
           <label className="siimple-label">Menu: </label>
           <select className="siimple-select"
-                  onChange={e => {props.history.push(e.target.value)}}>
-            <option value="/">Home</option>
-            <option value="/values">Values</option>
-            <option value="/exchangers">Exchangers</option>
-            <option value="/trades">Trades</option>
-            <option value="/confidences">Confidences</option>
-            <option value="/trends">Trends</option>
-            <option value="/positions">Positions</option>
+                  onChange={e => {props.history.push(e.target.value)}}
+                  defaultValue={location.pathname}>
+            {
+              pages.map((page, i) =>
+                <option key={i} value={page.path}>{page.name}</option>
+              )
+            }
           </select>
-          <div className="siimple-btn" onClick={(e) => location.reload()}>
+          <a className="siimple-btn" onClick={(e) => location.reload()}>
             Reload
-          </div>
+          </a>
           {this.isLoggedIn() ? (
-            <div className="siimple-btn"
-                 onClick={e => this.logout(props.history)}>
+            <a className="siimple-btn" onClick={e => this.logout(props.history)}>
               Logout
-            </div>
+            </a>
           ) : (
             <Link to="/login" className="siimple-navbar-item">Login</Link>
           )}

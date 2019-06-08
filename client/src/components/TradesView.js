@@ -9,16 +9,27 @@ const sumProduct = (xss) =>
 
 const summarizeTrades = (ts) => {
   const groups = groupBy(t => t.position.side, ts)
+  const total = {size: 0, amount: 0}
   const sums = groups.map(g => {
+    const side = g[0].position.side
     const size = sum(g.map(t => sum(t.position.sizes)))
     const amount = sum(g.map(t => sumProduct([t.position.prices,
                                               t.position.sizes])))
+    if (side == 'LONG') {
+      total.size += size
+      total.amount -= amount
+    } else {
+      total.size -= size
+      total.amount += amount
+    }
     return {
       timestamp: g[0].timestamp,
-      side: g[0].position.side,
+      side: side,
       size: size,
       amount: amount,
-      price: amount / size
+      price: amount / size,
+      total_size: total.size,
+      total_amount: total.amount
     }
   })
   return sums
@@ -75,6 +86,7 @@ export default class TradesView extends React.Component {
             <Td>Size</Td>
             <Td>Price</Td>
             <Td>Amount</Td>
+            <Td>Total</Td>
           </Tr>
         </div>
         <div className="siimple-table-body">
@@ -88,6 +100,7 @@ export default class TradesView extends React.Component {
                   <Td>{v.size.toFixed(3)}</Td>
                   <Td>{jpy(v.price)}</Td>
                   <Td>{jpy(v.amount)}</Td>
+                  <Td>{jpy(v.total_amount)} ({v.total_size.toFixed(1)})</Td>
                 </Tr>
               )
             })

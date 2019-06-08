@@ -463,7 +463,7 @@ def runMain(port=None):
   if len(list(accounts)) == 0:
     requestUserSetting()
     exit()
-  app.debug = True # デバッグモード有効化
+  #app.debug = True # デバッグモード有効化
   app.run(host='0.0.0.0', port=port)
 
 def runAddUser(username, password=None):
