@@ -1,5 +1,6 @@
-PyMongo
-PyJWT
+python-dateutil
 Flask-JWT-Extended
 numpy
-bson
+pymongo
+PyJWT
+requests

@@ -17,7 +17,7 @@ DIR_LIBS = os.path.join(CWD, '..', '..', 'libs')
 sys.path.append(os.path.join(DIR_LIBS, 'btcbot1', 'apps', 'trade', 'src'))
 
 from main import getDBInstance, getModels
-from classes import Confidence, Position, strToDatetime
+from classes import Confidence, TrendStrength, Position, strToDatetime
 
 dbi = getDBInstance()
 dashbModels = DashboardModels(dbi)
@@ -26,6 +26,7 @@ btctaiModels = getModels(dbi)
 modelAccounts = dashbModels.Accounts
 modelValues = btctaiModels.Values
 modelConfidences = btctaiModels.Confidences
+modelTrendStrengths = btctaiModels.TrendStrengths
 modelTrades = btctaiModels.Trades
 modelPositions = btctaiModels.Positions
 modelTicks = btctaiModels.Ticks
@@ -219,6 +220,38 @@ def putBtctaiConfidences(accountId):
   conf = conf.toDict()
   return flask.jsonify(conf)
 
+@app.route('/btctai/<string:accountId>/trendStrength', methods=['GET'])
+@flask_jwt.jwt_required
+def getBtctaiTrendStrength(accountId):
+  identity = flask_jwt.get_jwt_identity()
+  if accountId != identity:
+    flask.abort(403)
+  count = flask.request.args.get('count', None)
+  before = flask.request.args.get('before', None)
+  try:
+    if count is not None:
+      count = int(count)
+    if before is not None:
+      before = float(before)
+  except ValueError as e:
+    flask.abort(400)
+  values = modelTrendStrengths.all(accountId=accountId,
+                                  before=before, count=count)
+  values = [v.toDict() for v in values]
+  return flask.jsonify(values)
+
+@app.route('/btctai/<string:accountId>/trendStrength', methods=['PUT'])
+@flask_jwt.jwt_required
+def putBtctaiTrendStrength(accountId):
+  identity = flask_jwt.get_jwt_identity()
+  if accountId != identity:
+    flask.abort(403)
+  obj = flask.request.get_json()
+  values = TrendStrength.fromDict(obj)
+  values = modelTrendStrengths.save(values, accountId=accountId)
+  values = values.toDict()
+  return flask.jsonify(values)
+
 # @app.route('/api/assets', methods=['GET'])
 # @jwt_required()
 # def get_assets():
@@ -406,9 +439,10 @@ def getOptions(args):
     }
     try:
         opts, args = getopt.getopt(args,
-                                   'hCp:',
+                                   'hC:P:p:',
                                    ['help',
                                     'create',
+                                    'password=',
                                     'port='])
     except getopt.GetoptError:
         return options
@@ -418,6 +452,8 @@ def getOptions(args):
         elif opt in ('-C', '--create'):
            options['mode'] = 'add_user'
            options['username'] = arg
+        elif opt in ('-P', '--password'):
+           options['password'] = arg
         elif opt in ('-p', '--port'):
            options['port'] = arg
     return options
@@ -430,14 +466,17 @@ def runMain(port=None):
   app.debug = True # デバッグモード有効化
   app.run(host='0.0.0.0', port=port)
 
-def runAddUser(username):
+def runAddUser(username, password=None):
   import getpass
-  password = None
   while password is None or password == '':
     password = getpass.getpass('Login password: ')
-  account = Account.create(username, password)
-  modelAccounts.save(account)
-  print('Succefully created, user={user}.'.format(user=username))
+  account = modelAccounts.oneByUsername(username)
+  if account is not None:
+    print('User already exists, user={user}.'.format(user=username))
+  else:
+    account = Account.create(username, password)
+    modelAccounts.save(account)
+    print('Succefully created, user={user}.'.format(user=username))
 
 def print_help():
     msg = """Usage: {script} [Options]...
@@ -454,7 +493,7 @@ if __name__ == '__main__':
     if options['mode'] == 'main':
         runMain(port=options['port'])
     elif options['mode'] == 'add_user':
-        runAddUser(options['username'])
+        runAddUser(options['username'], options['password'])
     else:
         print_help()
     
