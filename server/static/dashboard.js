@@ -36286,7 +36286,7 @@ function (_React$Component) {
           var date = new Date(datetime * 1000);
           return _react.default.createElement(_tables.Tr, {
             key: i
-          }, _react.default.createElement(_tables.Td, null, exchanger), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(ask)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(bid)), _react.default.createElement(_tables.Td, null, date.toLocaleString()));
+          }, _react.default.createElement(_tables.Td, null, exchanger), _react.default.createElement(_tables.Td, null, ask.toPrecision(6)), _react.default.createElement(_tables.Td, null, bid.toPrecision(6)), _react.default.createElement(_tables.Td, null, date.toLocaleString()));
         }))));
       });
     }
@@ -36386,19 +36386,35 @@ var summarizeTrades = function summarizeTrades(ts) {
   var groups = (0, _utils.groupBy)(function (t) {
     return t.position.side;
   }, ts);
+  var total = {
+    size: 0,
+    amount: 0
+  };
   var sums = groups.map(function (g) {
+    var side = g[0].position.side;
     var size = sum(g.map(function (t) {
       return sum(t.position.sizes);
     }));
     var amount = sum(g.map(function (t) {
       return sumProduct([t.position.prices, t.position.sizes]);
     }));
+
+    if (side == 'LONG') {
+      total.size += size;
+      total.amount -= amount;
+    } else {
+      total.size -= size;
+      total.amount += amount;
+    }
+
     return {
       timestamp: g[0].timestamp,
-      side: g[0].position.side,
+      side: side,
       size: size,
       amount: amount,
-      price: amount / size
+      price: amount / size,
+      total_size: total.size,
+      total_amount: total.amount
     };
   });
   return sums;
@@ -36512,13 +36528,13 @@ function (_React$Component) {
       var Summary = function Summary() {
         return _react.default.createElement(_tables.Table, null, _react.default.createElement("div", {
           className: "siimple-table-header"
-        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Date"), _react.default.createElement(_tables.Td, null, "Side"), _react.default.createElement(_tables.Td, null, "Size"), _react.default.createElement(_tables.Td, null, "Price"), _react.default.createElement(_tables.Td, null, "Amount"))), _react.default.createElement("div", {
+        }, _react.default.createElement(_tables.Tr, null, _react.default.createElement(_tables.Td, null, "Date"), _react.default.createElement(_tables.Td, null, "Side"), _react.default.createElement(_tables.Td, null, "Size"), _react.default.createElement(_tables.Td, null, "Price"), _react.default.createElement(_tables.Td, null, "Amount"), _react.default.createElement(_tables.Td, null, "Total"))), _react.default.createElement("div", {
           className: "siimple-table-body"
         }, summarizeTrades(state.trades).map(function (v, i) {
           var date = new Date(v.timestamp * 1000);
           return _react.default.createElement(_tables.Tr, {
             key: i
-          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, v.side), _react.default.createElement(_tables.Td, null, v.size.toFixed(3)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.price)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.amount)));
+          }, _react.default.createElement(_tables.Td, null, date.toLocaleString()), _react.default.createElement(_tables.Td, null, v.side), _react.default.createElement(_tables.Td, null, v.size.toFixed(3)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.price)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.amount)), _react.default.createElement(_tables.Td, null, (0, _utils.jpy)(v.total_amount), " (", v.total_size.toFixed(1), ")"));
         })));
       };
 
